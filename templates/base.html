@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    {% block styles %}
+    <!-- Bootstrap CSS -->
+    {{ bootstrap.load_css() }}
+    <link rel="stylesheet" href={{ url_for('static', filename='style.css' ) }}>
+
+    {% endblock %}
+
+    <title>folderbe</title>
+    {% endblock %}
+</head>
+
+<body>
+    <nav class="d-lg-block p-3 bg-light">
+        <div class="text-center">
+            <a href="#" class="text-dark text-decoration-none">구독 그룹 ></a>
+        </div>
+        <div class="list-group list-group-flush mx-3 mt-4 border-bottom scrollarea"></div>
+        {% for dir in dirs %}
+        <a href="#" class="list-group-item list-group-item-action text-center">{{ dir }}</a>
+        {% endfor %}
+    </nav>
+
+
+    {% block content %}{% endblock %}
+
+    {% block scripts %}
+    <!-- Optional JavaScript -->
+    {{ bootstrap.load_js() }}
+    {% endblock %}
+</body>
+
+</html>
