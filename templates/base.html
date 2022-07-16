@@ -19,18 +19,35 @@
 </head>
 
 <body>
-    <nav class="d-lg-block p-3 bg-light">
-        <div class="text-center">
-            <a href="#" class="text-dark text-decoration-none">구독 그룹 ></a>
+    <div class="d-flex base-container">
+        <header>
+            여긴 헤더
+        </header>
+        <div class="d-flex">
+            <nav class="sidebar d-flex flex-column p-3">
+                <div class="text-center mb-4">
+                    <a href="#" class="text-dark text-decoration-none">구독 그룹 ></a>
+                </div>
+                <ul class="list-unstyled flex-column">
+                    {% for dir in dirs %}
+                    <li class="">
+                        <a href="#" class="nav-link text-decoration-none">
+                            <svg class="icon icon-folder-open">
+                                <use href="/static/svg/sprite.svg#icon-folder-open"></use>
+                            </svg>
+                            <span>{{ dir }}</span>
+                        </a>
+                    </li>
+                    {% endfor %}
+                </ul>
+                <div class="legal mt-auto">
+                    &copy folderbe
+                </div>
+            </nav>
+            {% block content %}{% endblock %}
         </div>
-        <div class="list-group list-group-flush mx-3 mt-4 border-bottom scrollarea"></div>
-        {% for dir in dirs %}
-        <a href="#" class="list-group-item list-group-item-action text-center">{{ dir }}</a>
-        {% endfor %}
-    </nav>
+    </div>
 
-
-    {% block content %}{% endblock %}
 
     {% block scripts %}
     <!-- Optional JavaScript -->

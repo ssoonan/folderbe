@@ -18,7 +18,7 @@ SCOPES = ["https://www.googleapis.com/auth/youtube",
           "https://www.googleapis.com/auth/youtubepartner"]
 
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/static')
 app.secret_key = "123asd2t234df!@#"
 bootstrap = Bootstrap5(app)
 

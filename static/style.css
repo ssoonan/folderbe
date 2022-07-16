@@ -1,8 +1,59 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+body {
+  min-height: 100vh;
+}
+
+*,
+*::before, *::after {
+  box-sizing: inherit;
+}
+
+.base-container {
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  height: 7rem;
+}
+
+
 nav {
-  width: 250px; 
-  position: fixed;
   z-index: 600;
   top: 0;
   bottom: 0;
   left: 0;
+
+  font-size: 1.6rem;
+}
+
+.sidebar {
+  flex: 0 0 12%;
+}
+
+.nav-link {
+  color: #383838;
+  line-height: 4rem;
+}
+
+.icon-folder-open {
+  width: 2rem;
+  height: 2rem;
+  fill: rgba(184, 184, 184, 0.897);
+  margin-right: 2rem;
+}
+
+.content {
+  flex: 1;
+  height: 80rem;
+
 }
