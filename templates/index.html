@@ -2,8 +2,16 @@
 
 {% block content %}
 <main class="content">
-
-  <iframe width="560" height="315" src="https://www.youtube.com/embed/YuKLpIt4I1U" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-  </main>
+  {% for thumbnail in thumbnails %}
+    <div class="thumbnail">
+      <a href="#" class="thumbnail__link">
+        <img class="thumbnail__img" src={{ thumbnail.img_url }} alt="섬네일">
+        <span>{{ thumbnail.title }}</span>
+        <a href="#" class="thumbnail__channel--link">채널이름</a>
+        <span class="thumbnail__detail"> {{ thumbnail.view_counts }} {{ thumbnail.published_at }} </span>
+      </a>
+    </div>
+  {% endfor %}
+</main>
 
 {% endblock %}

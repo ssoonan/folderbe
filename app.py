@@ -5,6 +5,8 @@ from flask import Flask, redirect, render_template, request, url_for, session
 from dotenv import load_dotenv
 from flask_bootstrap import Bootstrap5
 
+from model import Thumbnail
+
 
 load_dotenv()
 API_URL = "https://www.googleapis.com/youtube/v3/subscriptions"
@@ -41,10 +43,13 @@ def request_api(http_method, api_url, params):
 @app.route("/index")
 @app.route("/")
 def index():
-
+    example_thumbnail = Thumbnail("https://i.ytimg.com/vi/QmpTkkaKYSU/hqdefault.jpg", "j-hope '방화 (Arson)' Official MV", "10734349", "2022-07-15T03:59:09Z")
     dirs = ["Eng", "ジム", "日本語", "coffee"]
+    thumbnails = [example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail,
+                  example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail]
 
-    return render_template("index.html", dirs=dirs)
+    return render_template("index.html", dirs=dirs, thumbnails=thumbnails)
+
 
 
 @app.route("/api_test")

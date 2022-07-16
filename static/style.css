@@ -54,6 +54,32 @@ nav {
 
 .content {
   flex: 1;
-  height: 80rem;
+  height: 80rem; /*TODO: 이후에 지우기*/
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: flex-start;
+}
+
+.thumbnail {
+  margin-bottom: 5rem;
+  font-size: 1.3rem;
+  width: 30rem;
+  height: 20rem;
+}
+
+
+.thumbnail__link {
+  display: flex;
+  flex-direction: column;
+}
+
+.thumbnail__img {
+  width: 27rem;
+  height: 18rem;
+}
+
+.thumbnail__detail {
 
 }
