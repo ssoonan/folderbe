@@ -1,3 +1,24 @@
+:root {
+  --color-primary: #eb2f64;
+  --color-primary-light: #FF3366;
+  --color-primary-dark: #BA265D;
+
+  --color-grey-light-1: #faf9f9;
+  --color-grey-light-2: #f4f2f2;
+  --color-grey-light-3: #f0eeee;
+  --color-grey-light-4: #ccc;
+  
+  --color-grey-dark-1: #333;
+  --color-grey-dark-2: #777;
+  --color-grey-dark-3: #999;
+
+  --shadow-dark: 0 2rem 6rem rgba(0,0,0,.3);
+  --shadow-light: 0 2rem 5rem rgba(0,0,0,.06);
+
+  --line: 2px solid var(--color-grey-light-2);
+}
+
+
 * {
   margin: 0;
   padding: 0;
@@ -83,3 +104,58 @@ nav {
 .thumbnail__detail {
 
 }
+
+
+/* list */
+
+.list__content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-right: 5rem;
+}
+
+.list__plus-folder {
+  font-size: 1.3rem;
+  width: 10rem;
+  padding: 1rem 0;
+  margin-bottom: 1.5rem;
+  
+}
+
+.folder {
+  display: flex;
+  height: 5rem;
+  align-items: center;
+  font-size: 1.6rem;
+  border-radius: 2%;
+
+  padding-left: 3rem;
+  border-top: var(--line);
+  border-left: var(--line);
+  border-right: var(--line);
+}
+
+.folder:last-child {
+  border-bottom: var(--line);
+}
+
+.folder__hover--icon {
+  margin-left: auto;
+  margin-right: 10rem;
+}
+
+.folder__plus-channel {
+  font-size: 1.3rem;
+  padding: .6rem;
+  margin-right: 2rem;
+}
+
+
+.folder__icon {
+  width: 2rem;
+  height: 2rem;
+  fill: rgba(184, 184, 184, 0.897);
+  margin: 0 0.5rem
+}
+

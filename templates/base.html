@@ -26,16 +26,16 @@
         <div class="d-flex">
             <nav class="sidebar d-flex flex-column p-3">
                 <div class="text-center mb-4">
-                    <a href="#" class="text-dark text-decoration-none">구독 그룹 ></a>
+                    <a href={{ url_for('list') }} class="text-dark text-decoration-none">구독 그룹 ></a>
                 </div>
                 <ul class="list-unstyled flex-column">
-                    {% for dir in dirs %}
+                    {% for folder in folders %}
                     <li class="">
                         <a href="#" class="nav-link text-decoration-none">
                             <svg class="icon icon-folder-open">
                                 <use href="/static/svg/sprite.svg#icon-folder-open"></use>
                             </svg>
-                            <span>{{ dir }}</span>
+                            <span>{{ folder }}</span>
                         </a>
                     </li>
                     {% endfor %}

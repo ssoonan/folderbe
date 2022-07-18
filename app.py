@@ -52,6 +52,15 @@ def index():
 
 
 
+@app.route("/list")
+def list():
+    
+    folders = ["Eng", "ジム", "日本語", "coffee"] # TODO: sidebar 데이터 중복 제거하기
+    
+
+    return render_template("list.html", folders=folders)
+
+
 @app.route("/api_test")
 def api_test():
     params = {"part": "snippet", "mine": True, "maxResults": 50}

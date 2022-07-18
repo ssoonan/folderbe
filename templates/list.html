@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main class="list__content">
+
+  <button class="list__plus-folder btn btn-light"><span>새 폴더 생성</span></button>
+  {% for folder in folders %}
+  <div class="folder">
+    <svg class="icon-folder-open">
+      <use href="/static/svg/sprite.svg#icon-folder-open"></use>
+    </svg>
+    <span class="folder__name">{{ folder }}</span>
+    <div class="folder__hover--icon">
+      <button class="folder__plus-channel btn btn-light"><span>채널 추가</span></button>
+      <svg class="folder__icon">
+        <use href="/static/svg/sprite.svg#icon-pencil"></use>
+      </svg>
+      <svg class="folder__icon">
+        <use href="/static/svg/sprite.svg#icon-bin2"></use>
+      </svg>
+    </div>
+  </div>
+
+  {% endfor %}
+
+
+</main>
+
+{% endblock %}
