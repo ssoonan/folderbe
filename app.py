@@ -44,11 +44,11 @@ def request_api(http_method, api_url, params):
 @app.route("/")
 def index():
     example_thumbnail = Thumbnail("https://i.ytimg.com/vi/QmpTkkaKYSU/hqdefault.jpg", "j-hope '방화 (Arson)' Official MV", "10734349", "2022-07-15T03:59:09Z")
-    dirs = ["Eng", "ジム", "日本語", "coffee"]
+    folders = ["Eng", "ジム", "日本語", "coffee"]
     thumbnails = [example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail,
                   example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail]
 
-    return render_template("index.html", dirs=dirs, thumbnails=thumbnails)
+    return render_template("index.html", folders=folders, thumbnails=thumbnails)
 
 
 
