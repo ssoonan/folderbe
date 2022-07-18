@@ -11,21 +11,66 @@
     </svg>
     <span class="folder__name">{{ folder }}</span>
     <div class="folder__hover--icon">
-      <button class="folder__plus-channel btn btn-light"><span>채널 추가</span></button>
-      
-        <svg class="folder__icon">
-          <use href="/static/svg/sprite.svg#icon-pencil"></use>
-        </svg>
-      
-      
-        <svg class="folder__icon">
-          <use href="/static/svg/sprite.svg#icon-bin2"></use>
-        </svg>
-      
+      <button class="folder__plus-channel btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>채널
+          추가</span></button>
+
+      <svg class="folder__icon">
+        <use href="/static/svg/sprite.svg#icon-pencil"></use>
+      </svg>
+
+
+      <svg class="folder__icon">
+        <use href="/static/svg/sprite.svg#icon-bin2"></use>
+      </svg>
+
     </div>
   </div>
 
   {% endfor %}
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <svg class="modal__icon-folder-open">
+            <use href="/static/svg/sprite.svg#icon-folder-open"></use>
+          </svg>
+          <h5 class="modal-title" id="exampleModalLabel">채널 추가</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body d-flex flex-column">
+          <div class="modal__search">
+            <svg class="modal__search--icon">
+              <use href="/static/svg/sprite.svg#icon-magnifying-glass"></use>
+            </svg>
+            <input type="text" class="modal__search--input" placeholder="검색">
+          </div>
+
+          <div class="modal__channel d-flex align-items-center pt-2 pb-2">
+            <input class="modal__channel--checkbox" type="checkbox">
+            <div class=""><img class="modal__channel--avatar" src="https://yt3.ggpht.com/ytc/AKedOLSuecR9F68V1OFY9hrKoK-xxU79IVXgGCpf33RO=s88-c-k-c0x00ffffff-no-rj"alt=""></div>
+            <span  class="modal__channel--name">남자 커피 Namja Coffee</span>
+          </div>
+          <div class="modal__channel d-flex align-items-center pt-2 pb-2">
+            <input class="modal__channel--checkbox" type="checkbox">
+            <div class=""><img class="modal__channel--avatar" src="https://yt3.ggpht.com/ytc/AKedOLSuecR9F68V1OFY9hrKoK-xxU79IVXgGCpf33RO=s88-c-k-c0x00ffffff-no-rj"alt=""></div>
+            <span  class="modal__channel--name">남자 커피 Namja Coffee</span>
+          </div>
+          <div class="modal__channel d-flex align-items-center pt-2 pb-2">
+            <input class="modal__channel--checkbox" type="checkbox">
+            <div class=""><img class="modal__channel--avatar" src="https://yt3.ggpht.com/ytc/AKedOLSuecR9F68V1OFY9hrKoK-xxU79IVXgGCpf33RO=s88-c-k-c0x00ffffff-no-rj"alt=""></div>
+            <span  class="modal__channel--name">남자 커피 Namja Coffee</span>
+          </div>
+          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 
 </main>
