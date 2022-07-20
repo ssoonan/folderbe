@@ -4,29 +4,31 @@
 <main class="list__content">
 
   <button class="list__plus-folder btn btn-light"><span>새 폴더 생성</span></button>
-  {% for folder in folders %}
-  <div class="folder">
-    <svg class="icon-folder-open">
-      <use href="/static/svg/sprite.svg#icon-folder-open"></use>
-    </svg>
-    <span class="folder__name">{{ folder }}</span>
-    <div class="folder__hover--icon">
-      <button class="folder__plus-channel btn btn-light" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>채널
-          추가</span></button>
-
-      <svg class="folder__icon">
-        <use href="/static/svg/sprite.svg#icon-pencil"></use>
+  <div class="folders">
+    {% for folder in folders %}
+    <div class="folder">
+      <svg class="icon-folder-open">
+        <use href="/static/svg/sprite.svg#icon-folder-open"></use>
       </svg>
+      <span class="folder__name">{{ folder }}</span>
+      <div class="folder__hover--icon">
+        <button class="folder__plus-channel btn btn-light" data-bs-toggle="modal"
+          data-bs-target="#exampleModal"><span>채널
+            추가</span></button>
+
+        <svg class="folder__icon">
+          <use href="/static/svg/sprite.svg#icon-pencil"></use>
+        </svg>
 
 
-      <svg class="folder__icon">
-        <use href="/static/svg/sprite.svg#icon-bin2"></use>
-      </svg>
+        <svg class="folder__icon">
+          <use href="/static/svg/sprite.svg#icon-bin2"></use>
+        </svg>
 
+      </div>
     </div>
+    {% endfor %}
   </div>
-
-  {% endfor %}
 
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -49,20 +51,26 @@
 
           <div class="modal__channel d-flex align-items-center pt-2 pb-2">
             <input class="modal__channel--checkbox" type="checkbox">
-            <div class=""><img class="modal__channel--avatar" src="https://yt3.ggpht.com/ytc/AKedOLSuecR9F68V1OFY9hrKoK-xxU79IVXgGCpf33RO=s88-c-k-c0x00ffffff-no-rj"alt=""></div>
-            <span  class="modal__channel--name">남자 커피 Namja Coffee</span>
+            <div class=""><img class="modal__channel--avatar"
+                src="https://yt3.ggpht.com/ytc/AKedOLSuecR9F68V1OFY9hrKoK-xxU79IVXgGCpf33RO=s88-c-k-c0x00ffffff-no-rj"
+                alt=""></div>
+            <span class="modal__channel--name">남자 커피 Namja Coffee</span>
           </div>
           <div class="modal__channel d-flex align-items-center pt-2 pb-2">
             <input class="modal__channel--checkbox" type="checkbox">
-            <div class=""><img class="modal__channel--avatar" src="https://yt3.ggpht.com/ytc/AKedOLSuecR9F68V1OFY9hrKoK-xxU79IVXgGCpf33RO=s88-c-k-c0x00ffffff-no-rj"alt=""></div>
-            <span  class="modal__channel--name">남자 커피 Namja Coffee</span>
+            <div class=""><img class="modal__channel--avatar"
+                src="https://yt3.ggpht.com/ytc/AKedOLSuecR9F68V1OFY9hrKoK-xxU79IVXgGCpf33RO=s88-c-k-c0x00ffffff-no-rj"
+                alt=""></div>
+            <span class="modal__channel--name">남자 커피 Namja Coffee</span>
           </div>
           <div class="modal__channel d-flex align-items-center pt-2 pb-2">
             <input class="modal__channel--checkbox" type="checkbox">
-            <div class=""><img class="modal__channel--avatar" src="https://yt3.ggpht.com/ytc/AKedOLSuecR9F68V1OFY9hrKoK-xxU79IVXgGCpf33RO=s88-c-k-c0x00ffffff-no-rj"alt=""></div>
-            <span  class="modal__channel--name">남자 커피 Namja Coffee</span>
+            <div class=""><img class="modal__channel--avatar"
+                src="https://yt3.ggpht.com/ytc/AKedOLSuecR9F68V1OFY9hrKoK-xxU79IVXgGCpf33RO=s88-c-k-c0x00ffffff-no-rj"
+                alt=""></div>
+            <span class="modal__channel--name">남자 커피 Namja Coffee</span>
           </div>
-          
+
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">저장</button>

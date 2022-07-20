@@ -115,17 +115,24 @@ header {
   
 }
 
+.folders {
+  border: var(--line);
+}
+
 .folder {
   display: flex;
   height: 5rem;
   align-items: center;
   font-size: 1.6rem;
   border-radius: 2%;
-
   padding-left: 3rem;
   border-top: var(--line);
-  border-left: var(--line);
-  border-right: var(--line);
+  
+}
+
+.folder:first-child {
+  /* 첫번째에만 border 제외. 이미 적용 되니까 */
+  border-top: none; 
 }
 
 .folder:hover {
@@ -137,9 +144,6 @@ header {
   display: block;
 }
 
-.folder:last-child {
-  border-bottom: var(--line);
-}
 
 .folder__hover--icon {
   margin-left: auto;
