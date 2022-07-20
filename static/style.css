@@ -49,7 +49,7 @@ header {
 
 .sidebar {
   font-size: 1.6rem;
-  flex: 0 0 12%;
+  flex: 0 0 25vh;
   min-height: 95vh;
 }
 
