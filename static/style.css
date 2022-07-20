@@ -194,6 +194,15 @@ header {
   font-size: 1.5rem;
 }
 
+.modal__search--input:focus::placeholder {
+  color: transparent;
+  transition: 0.2s;
+}
+
+.modal__search--input:focus {
+  outline: none;
+}
+
 .modal__search--icon {
   width: 3rem;
   height: 3rem;
