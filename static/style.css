@@ -154,6 +154,11 @@ header {
   font-size: 1.3rem;
   padding: .6rem;
   margin-right: 2rem;
+  border-radius: 10%;
+}
+
+.folder__plus-channel:hover {
+  background-color: var(--color-grey-light-4);
 }
 
 
@@ -171,6 +176,12 @@ header {
 .modal-body {
   padding-bottom: 0;
 }
+
+.modal-content {
+  height: 70vh;
+  border-radius: .7%;
+}
+
 
 .modal__icon-folder-open {
   width: 2rem;
