@@ -137,7 +137,6 @@ header {
 
 .folder:hover {
   background-color: var(--color-grey-light-2);
-
 }
 
 .folder:hover .folder__hover--icon {
@@ -186,6 +185,7 @@ header {
   border-bottom: var(--line);
   margin-right: 5rem;
   margin-bottom: 5rem;
+  margin-left: 1rem;
 }
 
 .modal__search--input {
@@ -204,8 +204,8 @@ header {
 }
 
 .modal__search--icon {
-  width: 3rem;
-  height: 3rem;
+  width: 2rem;
+  height: 2rem;
   margin-right: .5rem;
 }
 
@@ -215,12 +215,17 @@ header {
 }
 
 
+.modal__channel:hover {
+  background-color: var(--color-grey-light-2);
+}
+
 .modal__channel:last-child {
   border-bottom: none;
 }
 
 .modal__channel--checkbox {
   transform: scale(1.7);
+  accent-color: var(--color-grey-dark-2);
   margin-left: 1rem;
   margin-right: 1.5rem;
 }
