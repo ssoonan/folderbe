@@ -21,7 +21,10 @@
 <body>
     <div class="d-flex base-container">
         <header>
-            여긴 헤더
+            <div>
+                <img src=""
+                .0 alt="">
+            </div>
         </header>
         <div class="d-flex">
             <nav class="sidebar d-flex flex-column p-3">
@@ -31,7 +34,7 @@
                 <ul class="list-unstyled flex-column">
                     {% for folder in folders %}
                     <li class="">
-                        <a href="#" class="nav-link text-decoration-none">
+                        <a href="{{ url_for('index') }}" class="nav-link text-decoration-none">
                             <svg class="icon icon-folder-open">
                                 <use href="/static/svg/sprite.svg#icon-folder-open"></use>
                             </svg>

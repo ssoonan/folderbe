@@ -3,14 +3,21 @@
 {% block content %}
 <main class="content">
   {% for thumbnail in thumbnails %}
-    <div class="thumbnail">
-      <a href="#" class="thumbnail__link">
-        <img class="thumbnail__img" src={{ thumbnail.img_url }} alt="섬네일">
-        <span>{{ thumbnail.title }}</span>
-        <a href="#" class="thumbnail__channel--link">채널이름</a>
-        <span class="thumbnail__detail"> {{ thumbnail.view_counts }} {{ thumbnail.published_at }} </span>
-      </a>
-    </div>
+  <div class="thumbnail">
+    <a href="#" class="thumbnail__link">
+      <img class="thumbnail__img" src={{ thumbnail.img_url }} alt="섬네일">
+      <span class="thumbnail__title">{{ thumbnail.title }}</span>
+      <div class="thumbnail__channel">
+        <img class="thumbnail__channel--img"
+          src="https://yt3.ggpht.com/ytc/AKedOLRRjGuN-GPWubsrcVN8jyhnELYRIfWG03gBR7fGrg=s68-c-k-c0x00ffffff-no-rj"
+          alt="채널 이미지">
+        <a href="#" class="thumbnail__channel--name">HYBE LABELS</a>
+      </div>
+      <span class="thumbnail__detail">
+        <span class="thumbnail__views">조회수 {{ thumbnail.view_counts }}회</span>
+        <span class="thumbnail__date">{{ thumbnail.published_at }}</span>
+    </a>
+  </div>
   {% endfor %}
 </main>
 
