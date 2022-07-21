@@ -5,7 +5,7 @@ from flask import Flask, redirect, render_template, request, url_for, session
 from dotenv import load_dotenv
 from flask_bootstrap import Bootstrap5
 
-from model import Thumbnail
+from model import Channel, Video
 
 
 load_dotenv()
@@ -43,12 +43,13 @@ def request_api(http_method, api_url, params):
 @app.route("/index")
 @app.route("/")
 def index():
-    example_thumbnail = Thumbnail("https://i.ytimg.com/vi/QmpTkkaKYSU/hqdefault.jpg", "j-hope '방화 (Arson)' Official MV", "10734349", "2022-07-15T03:59:09Z")
+    example_channel = Channel("https://yt3.ggpht.com/ytc/AKedOLRRjGuN-GPWubsrcVN8jyhnELYRIfWG03gBR7fGrg=s68-c-k-c0x00ffffff-no-rj", "HYBE LABELS", "https://www.youtube.com/channel/UC3IZKseVpdzPSBaWxBxundA")
+    example_video = Video("https://i.ytimg.com/vi/QmpTkkaKYSU/hqdefault.jpg", "j-hope '방화 (Arson)' Official MV", 10734349, "2022-07-15T03:59:09Z", 0, "", example_channel)
     folders = ["Eng", "ジム", "日本語", "coffee"]
-    thumbnails = [example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail,
-                  example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail, example_thumbnail]
+    videos = [example_video, example_video, example_video, example_video, example_video, example_video,
+                  example_video, example_video, example_video, example_video, example_video, example_video]
 
-    return render_template("index.html", folders=folders, thumbnails=thumbnails)
+    return render_template("index.html", folders=folders, videos=videos)
 
 
 

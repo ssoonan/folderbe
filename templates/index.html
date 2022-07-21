@@ -2,11 +2,11 @@
 
 {% block content %}
 <main class="content">
-  {% for thumbnail in thumbnails %}
+  {% for video in videos %}
   <div class="thumbnail">
     <a href="#" class="thumbnail__link">
-      <img class="thumbnail__img" src={{ thumbnail.img_url }} alt="섬네일">
-      <span class="thumbnail__title">{{ thumbnail.title }}</span>
+      <img class="thumbnail__img" src={{ video.thumbnail_img }} alt="섬네일">
+      <span class="thumbnail__title">{{ video.title }}</span>
       <div class="thumbnail__channel">
         <img class="thumbnail__channel--img"
           src="https://yt3.ggpht.com/ytc/AKedOLRRjGuN-GPWubsrcVN8jyhnELYRIfWG03gBR7fGrg=s68-c-k-c0x00ffffff-no-rj"
@@ -14,8 +14,8 @@
         <a href="#" class="thumbnail__channel--name">HYBE LABELS</a>
       </div>
       <span class="thumbnail__detail">
-        <span class="thumbnail__views">조회수 {{ thumbnail.view_counts }}회</span>
-        <span class="thumbnail__date">{{ thumbnail.published_at }}</span>
+        <span class="thumbnail__views">조회수 {{ video.view_counts }}회</span>
+        <span class="thumbnail__date">{{ video.published_date }}</span>
     </a>
   </div>
   {% endfor %}
