@@ -1,8 +1,7 @@
 import requests
-import os
+import time
 
-from flask import Blueprint, Flask, redirect, render_template, request, url_for, session
-from dotenv import load_dotenv
+from flask import Blueprint, redirect, render_template, url_for, session
 
 
 from .model import Channel, Folder, Video
@@ -16,6 +15,10 @@ bp = Blueprint('main', __name__, )
 def check_access_token():
     if session.get('access_token') is None:  # access_token 자체가 없을 때
         return redirect(url_for("auth.authorize"))
+    
+    if time.time() > session['expired_at']:  # 현재 시간이 더 크면 만료된 것
+        return redirect(url_for('auth.refresh_token'))
+
 
 
 @bp.route("/index")

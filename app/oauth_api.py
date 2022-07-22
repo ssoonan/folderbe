@@ -12,8 +12,6 @@ MAX_RESULTS = 50
 def request_api(http_method, api_url, params):
     headers = {"Authorization": "Bearer " + session.get('access_token', '')}
     response = http_method(api_url, params=params, headers=headers) # TODO: 이 결과가 401일 때의 refresh_token 처리
-    if response.status_code == 401:
-        return redirect(url_for("auth.refresh_token"))
     return response.json()
 
 

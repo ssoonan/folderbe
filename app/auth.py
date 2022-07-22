@@ -49,7 +49,7 @@ def callback():
               "redirect_uri": url_for("auth.callback", _external=True),
               "grant_type": "authorization_code"}
     response = requests.post(TOKEN_URL, params=params).json()
-    session['expired_at'] = time.time() + response['expires_in']  # 토큰 만료시간까지 기입
+    session['expired_at'] = time.time() + response['expires_in']  # 토큰 만료시간 기입
     session['access_token'] = response['access_token']
     session['refresh_token'] = response['refresh_token']
     return redirect(url_for("main.index"))
@@ -59,10 +59,11 @@ def callback():
 def refresh_token():
     params = {"client_id": CLIENT_ID,
               "client_secret": CLIENT_SECRET,
-              "refresh_token": session.get('refersh_token', ''),
+              "refresh_token": session.get('refresh_token', ''),
               "grant_type": "refresh_token"}
     response = requests.post(TOKEN_URL, params=params)
     if response.status_code != 200:
-        return redirect("authorize") # refresh token도 만료 되면 재인증을 거쳐야함
+        return redirect(url_for("auth.authorize")) # refresh token도 만료 되면 재인증을 거쳐야함
     session['access_token'] = response.json()['access_token']
+    session['expired_at'] = time.time() + response.json()['expires_in']  # 토큰 만료시간 기입
     return redirect(url_for("main.index"))
