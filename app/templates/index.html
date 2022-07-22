@@ -9,9 +9,9 @@
       <span class="thumbnail__title">{{ video.title }}</span>
       <div class="thumbnail__channel">
         <img class="thumbnail__channel--img"
-          src="https://yt3.ggpht.com/ytc/AKedOLRRjGuN-GPWubsrcVN8jyhnELYRIfWG03gBR7fGrg=s68-c-k-c0x00ffffff-no-rj"
+          src="{{ video.channel.icon_img }}"
           alt="채널 이미지">
-        <a href="#" class="thumbnail__channel--name">HYBE LABELS</a>
+        <span class="thumbnail__channel--name">HYBE LABELS</span>
       </div>
       <span class="thumbnail__detail">
         <span class="thumbnail__views">조회수 {{ video.view_counts }}회</span>

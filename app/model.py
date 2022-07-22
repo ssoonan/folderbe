@@ -1,16 +1,18 @@
 
 
 class Channel:
-    def __init__(self, icon_img, name, link):
+    def __init__(self, icon_img, name):
         self.icon_img = icon_img
         self.name = name
-        self.link = link
 
 
 class Folder:
     def __init__(self, name):
         self.name = name
         self.channels = []
+    
+    def add_channels(self, channels):
+        self.channels.extend(channels)
 
     
 class Video:
