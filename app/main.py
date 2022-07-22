@@ -29,7 +29,7 @@ def index():
     for channel in channels:
         videos = get_videos_from_channel(channel)
         whole_videos.extend(videos)
-    whole_videos.sort(key=lambda video: video.published_date, reverse=True)
+    whole_videos.sort(key=lambda video: video.published_date, reverse=True)  #TODO: 이 코드가 굳이 여기에 있어야 할까?
 
     folder = Folder("all")
     folder.add_channels(channels)
