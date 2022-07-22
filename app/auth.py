@@ -6,7 +6,6 @@ import time
 
 
 load_dotenv()
-API_URL = "https://www.googleapis.com/youtube/v3/subscriptions"
 AUTHORIZATION_URL = "https://accounts.google.com/o/oauth2/v2/auth"
 TOKEN_URL = "https://oauth2.googleapis.com/token"
 CLIENT_ID = os.environ.get("CLIENT_ID")

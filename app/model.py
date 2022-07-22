@@ -1,7 +1,8 @@
 
 
 class Channel:
-    def __init__(self, icon_img, name):
+    def __init__(self, channel_id, icon_img, name):
+        self.channel_id = channel_id
         self.icon_img = icon_img
         self.name = name
 
@@ -16,7 +17,8 @@ class Folder:
 
     
 class Video:
-    def __init__(self, thumbnail_img, title, view_counts, published_date, likes, info, channel):
+    def __init__(self, video_id, thumbnail_img, title, view_counts, published_date, likes, info, channel):
+        self.video_id = video_id
         self.thumbnail_img = thumbnail_img
         self.title = title
         self.view_counts = view_counts

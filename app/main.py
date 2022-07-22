@@ -5,7 +5,7 @@ from flask import Blueprint, redirect, render_template, url_for, session
 
 
 from .model import Channel, Folder, Video
-from .oauth_api import API_URL, get_whole_channels, request_api
+from .oauth_api import  get_videos_from_channel, get_whole_channels, request_api
 
 
 bp = Blueprint('main', __name__, )
@@ -25,18 +25,17 @@ def check_access_token():
 @bp.route("/")
 def index():
     channels = get_whole_channels()
+    whole_videos = []
+    for channel in channels:
+        videos = get_videos_from_channel(channel)
+        whole_videos.extend(videos)
+    whole_videos.sort(key=lambda video: video.published_date, reverse=True)
 
-    example_channel = Channel("https://yt3.ggpht.com/ytc/AKedOLRRjGuN-GPWubsrcVN8jyhnELYRIfWG03gBR7fGrg=s68-c-k-c0x00ffffff-no-rj", "HYBE LABELS")
-    example_video = Video("https://i.ytimg.com/vi/QmpTkkaKYSU/hqdefault.jpg", "j-hope '방화 (Arson)' Official MV", 10734349, "2022-07-15T03:59:09Z", 0, "", example_channel)
     folder = Folder("all")
     folder.add_channels(channels)
     folders = [folder]
 
-    videos = [example_video, example_video, example_video, example_video, example_video, example_video,
-                  example_video, example_video, example_video, example_video, example_video, example_video]
-
-
-
+    videos = whole_videos[:15]
     return render_template("index.html", folders=folders, videos=videos)
 
 
@@ -48,10 +47,3 @@ def list():
     
 
     return render_template("list.html", folders=folders)
-
-
-@bp.route("/api_test")
-def api_test():
-    params = {"part": "snippet", "mine": True, "maxResults": 50}
-    response = request_api(requests.get, API_URL, params)
-    return response
