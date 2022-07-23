@@ -82,9 +82,10 @@ main {
 }
 
 .thumbnail {
+  margin-right: 1.3rem;
   margin-bottom: 10rem;
   font-size: 1.3rem;
-  width: 30rem;
+  width: 24rem;
   height: 20rem;
 
 }
@@ -100,14 +101,13 @@ main {
 .thumbnail__title {
   margin-top: 1rem;  
   margin-bottom: .5rem;
-  margin-right: 1rem;
-  font-size: 1.5rem;
+  
+  font-size: 1.3rem;
   font-weight: 550;
 }
 
 .thumbnail__img {
-  width: 27rem;
-  height: 18rem;
+  height: 16rem;
 }
 
 .thumbnail__channel {
