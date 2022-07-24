@@ -29,6 +29,9 @@ class Video:
         self.likes = likes
         self.info = info
         self.channel = channel
+    
+    def get_video_url(self):
+        return "https://www.youtube.com/embed/{}".format(self.video_id)
 
 
 def make_example_videos():
