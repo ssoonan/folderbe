@@ -13,7 +13,8 @@ CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 SCOPES = ["https://www.googleapis.com/auth/youtube",
           "https://www.googleapis.com/auth/youtube.force-ssl",
           "https://www.googleapis.com/auth/youtube.readonly",
-          "https://www.googleapis.com/auth/youtubepartner"]
+          "https://www.googleapis.com/auth/youtubepartner",
+          "https://www.googleapis.com/auth/userinfo.profile"]
 
 
 

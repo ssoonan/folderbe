@@ -35,3 +35,11 @@ CREATE TABLE `Folder_Channel` (
 FOREIGN KEY (`channel_id`) REFERENCES `Channel`(`id`),
 FOREIGN KEY (`folder_id`) REFERENCES `Folder`(`id`)
 );
+
+CREATE TABLE 'User_Channel' (
+  `id` int primary key,
+  `user_id` int not null,
+  `channel_id` int not null,
+  foreign key (`user_id`) REFERENCES `User`(`id`),
+  foreign key (`channel_id`) REFERENCES `Channel`(`id`)
+)

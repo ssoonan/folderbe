@@ -1,6 +1,9 @@
 from flask import g, current_app
+from typing import List
 import pymysql
 import click
+
+from app.model import Channel, Folder, User
 
 def parse_sql(filename):
     data = open(filename, 'r').readlines()
@@ -58,10 +61,43 @@ def close_db():
         db.close()
 
 
+class Dao:
+    def __init__(self, ):
+        pass
+    
+
+
 class UserDao:
     def __init__(self) -> None:
         pass
 
-    def findByUserId(user_id):
+    def find_by_id(user_id) -> User:
         sql = "select * from User where id = {}".format(user_id)
-        g.db.cursor().  
+    
+    def insert(user: User):
+        pass
+
+
+class ChannelDao:
+    def __init__(self) -> None:
+        pass
+
+    def find_channels_from_user(user: User) -> List[Channel]:
+        pass
+    
+    def find_channels_from_folder(folder: Folder) -> List[Channel]:
+        pass
+
+
+class FolderDao:
+    def __init__(self) -> None:
+        pass
+
+    def find_by_user(user: User) -> Folder:
+        pass
+    
+    def insert(folder: Folder):
+        pass
+
+    def update_channels(folder: Folder, channels: List[Channel]):
+        pass

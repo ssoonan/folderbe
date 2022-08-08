@@ -1,4 +1,11 @@
 
+class User:
+    def __init__(self, user_img, name, email, access_token):
+        self.user_img = user_img
+        self.name = name
+        self.email = email
+        self.access_token = access_token
+
 
 class Channel:
     def __init__(self, channel_id, icon_img, name, playlist_id=None):
