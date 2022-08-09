@@ -1,4 +1,4 @@
-from flask import g, current_app, Flask
+from flask import g, Flask
 import pymysql
 import click
 
@@ -33,7 +33,7 @@ def parse_sql(filename):
     return stmts
 
 
-def get_db():
+def get_db() -> pymysql.connect:
     db = getattr(g, '_database', None)
     if db is None:
         db = g._database = pymysql.connect(host="localhost",
