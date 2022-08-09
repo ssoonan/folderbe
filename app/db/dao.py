@@ -1,8 +1,9 @@
-from flask import g, current_ap
+from sqlite3 import Cursor
 from typing import List
 
 
-from app.model import Channel, Folder, User
+from ..model import Channel, Folder, User
+from .helper import get_db
 
 
 class Dao:
@@ -16,9 +17,18 @@ class UserDao:
 
     def find_by_id(user_id) -> User:
         sql = "select * from User where id = {}".format(user_id)
-    
+        cursor = get_db().cursor()
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        return result
+
+
     def insert(user: User):
-        pass
+        sql = """insert into User (`name`, `img`, `email`) VALUES ("{}", "{}", "{}")""".format(user.name, user.user_img, user.email)
+        cursor = get_db().cursor()
+        cursor.execute(sql)
+        get_db().commit()
+        cursor.close()
 
 
 class ChannelDao:
