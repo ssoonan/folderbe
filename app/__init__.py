@@ -15,5 +15,7 @@ def create_app():
     from . import auth
     app.register_blueprint(auth.bp)
     
+    from . import db
+    db.helper.init_app(app)
 
     return app

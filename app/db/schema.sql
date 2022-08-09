@@ -1,10 +1,12 @@
-CREATE SCHEMA if not exists 'folderbe';
-use folderbe
+DROP schema if exists `folderbe`;
 
-DROP TABLE if exists User;
-DROP TABLE if exists Folder;
-DROP TABLE if exists Channel;
-DROP TABLE if exists Folder_Channel;
+CREATE schema `folderbe`;
+use folderbe;
+
+DROP TABLE if exists `User`;
+DROP TABLE if exists `Folder`;
+DROP TABLE if exists `Channel`;
+DROP TABLE if exists `Folder_Channel`;
 
 CREATE TABLE `User` (
   `id` int primary key,
