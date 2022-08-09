@@ -9,11 +9,11 @@ DROP TABLE if exists `Channel`;
 DROP TABLE if exists `Folder_Channel`;
 
 CREATE TABLE `User` (
-  `id` int primary key,
-  `img` text(100),
+  `id` int primary key auto_increment,
   `name` varchar(20) not null,
+  `img` text(150),
   `email` varchar(20),
-  `access_token` text(100)
+  `access_token` text(150)
 );
 
 CREATE TABLE `Folder` (

@@ -38,12 +38,15 @@ def get_db() -> pymysql.connect:
     if db is None:
         db = g._database = pymysql.connect(host="localhost",
                                            user="root",
-                                           password="test")
+                                           password="test",
+                                           database='folderbe')
     return db
 
 
 def init_db():
-    db = get_db()
+    db = pymysql.connect(host="localhost",
+                         user="root",
+                         password="test")
     stmts = parse_sql('app/db/schema.sql')
     with db.cursor() as cursor:
         for stmt in stmts:
