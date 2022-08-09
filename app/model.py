@@ -1,6 +1,6 @@
 
 class User:
-    def __init__(self, user_img, name, email, access_token):
+    def __init__(self, user_img, name, email, access_token=None):
         self.user_img = user_img
         self.name = name
         self.email = email
@@ -12,6 +12,7 @@ class Channel:
         self.channel_id = channel_id
         self.icon_img = icon_img
         self.name = name
+        self.playlist_id = playlist_id
     
     def set_playlist_id(self, playlist_id):
         self.playlist_id = playlist_id
