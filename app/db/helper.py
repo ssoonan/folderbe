@@ -1,5 +1,6 @@
 from flask import g, Flask
 import pymysql
+import pymysql.cursors
 import click
 
 
@@ -39,7 +40,8 @@ def get_db() -> pymysql.connect:
         db = g._database = pymysql.connect(host="localhost",
                                            user="root",
                                            password="test",
-                                           database='folderbe')
+                                           database='folderbe',
+                                           cursorclass=pymysql.cursors.DictCursor)
     return db
 
 

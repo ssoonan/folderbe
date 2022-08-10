@@ -20,7 +20,8 @@ class UserDao:
         cursor = get_db().cursor()
         cursor.execute(sql)
         result = cursor.fetchone()
-        return result
+        cursor.close()
+        return User(result['img'], result['name'], result['email'])
 
 
     def insert(user: User):
