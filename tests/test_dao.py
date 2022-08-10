@@ -9,3 +9,4 @@ def test_user_dao(app: Flask):
         user1 = UserDao.find_by_id(1)
         assert type(user1) == User
         assert user1.name == '옥순환'
+        
