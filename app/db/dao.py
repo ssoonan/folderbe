@@ -21,7 +21,7 @@ class UserDao:
         cursor.execute(sql)
         result = cursor.fetchone()
         cursor.close()
-        return User(result['img'], result['name'], result['email'])
+        return User(result['img'], result['name'], result['email'], user_id=user_id)
 
 
     def insert(user: User):

@@ -1,10 +1,11 @@
 
 class User:
-    def __init__(self, user_img, name, email, access_token=None):
+    def __init__(self, user_img, name, email, access_token=None, user_id=None):
         self.user_img = user_img
         self.name = name
         self.email = email
         self.access_token = access_token
+        self.user_id = user_id
 
 
 class Channel:
@@ -19,9 +20,10 @@ class Channel:
 
 
 class Folder:
-    def __init__(self, name):
+    def __init__(self, name, folder_id=None):
         self.name = name
         self.channels = []
+        self.folder_id = folder_id
     
     def add_channels(self, channels):
         self.channels.extend(channels)
