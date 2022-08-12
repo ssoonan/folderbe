@@ -15,16 +15,8 @@ class UserDao:
     def __init__(self) -> None:
         pass
 
-    def find_by_id(user_id) -> User:
-        sql = "select * from User where id = {}".format(user_id)
-        cursor = get_db().cursor()
-        cursor.execute(sql)
-        result = cursor.fetchone()
-        cursor.close()
-        return User(result['img'], result['name'], result['email'], user_id=user_id)
-    # TODO: find 1개로 리팩토링
-    def find_by_email(email) -> User:
-        sql = "select * from User where email = \"{}\"".format(email)
+    def find_by(value, key='id') -> User:
+        sql = "select * from User where `{key}` = \"{}\"".format(value, key=key)
         cursor = get_db().cursor()
         cursor.execute(sql)
         result = cursor.fetchone()
@@ -32,7 +24,6 @@ class UserDao:
         if result is None:
             return None
         return User(result['img'], result['name'], result['email'], user_id=result['id'])
-
 
     def insert(user: User):
         sql = """insert into User (`name`, `img`, `email`, `refresh_token`) VALUES ("{}", "{}", "{}", "{}")""".format(user.name, user.user_img, user.email, user.refresh_token)
