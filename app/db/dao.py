@@ -22,10 +22,20 @@ class UserDao:
         result = cursor.fetchone()
         cursor.close()
         return User(result['img'], result['name'], result['email'], user_id=user_id)
+    # TODO: find 1개로 리팩토링
+    def find_by_email(email) -> User:
+        sql = "select * from User where email = \"{}\"".format(email)
+        cursor = get_db().cursor()
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        cursor.close()
+        if result is None:
+            return None
+        return User(result['img'], result['name'], result['email'], user_id=result['id'])
 
 
     def insert(user: User):
-        sql = """insert into User (`name`, `img`, `email`) VALUES ("{}", "{}", "{}")""".format(user.name, user.user_img, user.email)
+        sql = """insert into User (`name`, `img`, `email`, `refresh_token`) VALUES ("{}", "{}", "{}", "{}")""".format(user.name, user.user_img, user.email, user.refresh_token)
         cursor = get_db().cursor()
         cursor.execute(sql)
         get_db().commit()

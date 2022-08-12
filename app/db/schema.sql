@@ -6,8 +6,8 @@ CREATE TABLE if not exists `User` (
   `id` int primary key auto_increment,
   `name` varchar(20) not null,
   `img` text,
-  `email` varchar(30),
-  `access_token` text
+  `email` varchar(30) unique,
+  `refresh_token` text
 );
 
 CREATE TABLE if not exists `Folder` (
