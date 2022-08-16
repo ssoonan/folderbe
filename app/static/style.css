@@ -44,7 +44,19 @@ body {
 }
 
 header {
-  height: 7rem;
+  height: 8rem;
+}
+
+.user-nav {
+  display: flex;
+}
+
+.user-nav__user-photo {
+  height: 3.75rem;
+  border-radius: 50%;
+  margin-top: 2rem;
+  margin-right: 2rem;
+  margin-left: auto;
 }
 
 .sidebar {
