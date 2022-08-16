@@ -39,16 +39,6 @@ def parse_id_token(token: str) -> dict:
     return json.loads(decoded)
 
 
-def back_to_auth(response: requests.Response):
-    if session.get('access_token') is None:  # access_token 자체가 없을 때
-        return redirect("authorize")
-    if response.status_code == 401:  # access_token이 있어도 인증이 안 될 때 -> refresh_token으로 재발급
-        return redirect("refresh_token")
-
-
-
-# if response.status_code == 401 or response.status_code == 403:  # TODO: refresh_token을 쓰는 부분까지 말끔하게 연결이.. access_token이 있어도 인증이 안 될 때 -> refresh_token으로 재발급
-
 @bp.route("/authorize")
 def authorize():
     params = {"client_id": CLIENT_ID,
@@ -76,9 +66,14 @@ def callback():
     user_name = user_info['name']
     user_img = user_info['picture']
     user_email = user_info['email']
-    user = User(user_img, user_name, user_email, response['refresh_token'])
-    if UserDao.find_by_email(user_email) is None:
+    user = UserDao.find_by(user_email, key='email')
+    if user is None:
+        user = User(user_img, user_name, user_email, response['refresh_token'])
         UserDao.insert(user)
+    else:  # TODO: 업데이트 하는 게 너무 장황한데?
+        user.user_img = user_img
+        user.refresh_token = response['refresh_token']
+        UserDao.update(user)
     session['user_name'] = user_name
     session['user_img'] = user_img
     

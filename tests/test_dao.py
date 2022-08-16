@@ -11,3 +11,6 @@ def test_user_dao(app: Flask):
         assert type(user1) == User
         assert user1.name == '옥순환'
         
+        user1.refresh_token = "after token"
+        UserDao.update(user1)  # update 파트
+        assert UserDao.find_by(email, key="email").refresh_token == "after token"

@@ -18,3 +18,4 @@ def app():
 
     with app.app_context():
         get_db().cursor().execute("DROP schema if exists `folderbe`")
+        init_db()
