@@ -75,6 +75,8 @@ def callback():
         user.refresh_token = response['refresh_token']
         UserDao.update(user)
     session['user_name'] = user_name
+    session['user_email'] = user_email
+    session['user_id'] = user.user_id
     session['user_img'] = user_img
     
     return redirect(url_for("main.index"))
