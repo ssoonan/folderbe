@@ -43,6 +43,14 @@ body {
   flex-direction: column;
 }
 
+.fade {
+  -webkit-transition: opacity 0.12s linear;
+     -moz-transition: opacity 0.12s linear;
+      -ms-transition: opacity 0.12s linear;
+       -o-transition: opacity 0.12s linear;
+          transition: opacity 0.12s linear;
+}
+
 header {
   height: 8rem;
 }
