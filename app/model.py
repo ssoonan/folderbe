@@ -20,9 +20,10 @@ class Channel:
 
 
 class Folder:
-    def __init__(self, name, folder_id=None):
+    def __init__(self, name, user_id=None, folder_id=None):
         self.name = name
         self.channels = []
+        self.user_id = user_id
         self.folder_id = folder_id
     
     def add_channels(self, channels):
@@ -31,7 +32,7 @@ class Folder:
 
 class LikeFolder(Folder):
     def __init__(self, name="좋아요 표시한 동영상", folder_id=-1):
-        super().__init__(name, folder_id)
+        super().__init__(name, folder_id=folder_id)
 
     
 class Video:
