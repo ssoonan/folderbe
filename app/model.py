@@ -28,6 +28,11 @@ class Folder:
     def add_channels(self, channels):
         self.channels.extend(channels)
 
+
+class LikeFolder(Folder):
+    def __init__(self, name="좋아요 표시한 동영상", folder_id=-1):
+        super().__init__(name, folder_id)
+
     
 class Video:
     def __init__(self, video_id, thumbnail_img, title, view_counts, published_date, likes, info, channel):

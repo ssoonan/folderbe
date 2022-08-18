@@ -4,7 +4,7 @@ import time
 from flask import Blueprint, redirect, render_template, url_for, session, g
 
 
-from .model import Channel, Folder, Video, make_example_videos
+from .model import Channel, Folder, LikeFolder, Video, make_example_videos
 from .oauth_api import  get_liked_videos, get_playlist_from_channel, get_videos_from_channel, get_whole_channels, request_api
 from .db.dao import FolderDao, UserDao
 
@@ -19,18 +19,25 @@ def check_access_token():
     
     if time.time() > session['expired_at']:  # 현재 시간이 더 크면 만료된 것
         return redirect(url_for('auth.refresh_token'))
-
+    
+    user = UserDao.find_by(session['user_id'], key="id")
+    folders = FolderDao.find_by_user(user)
+    folders.insert(0, LikeFolder())
+    g.folders = folders
 
 
 @bp.route("/index")
 @bp.route("/")
 def index():
-    user = UserDao.find_by(session['user_id'], key="id")
-    folders = FolderDao.find_by_user(user)
-    if not folders:
-        folders = [Folder('좋아요 표시한 동영상', None)]
+    videos = get_liked_videos()
+    return render_template("index.html", videos=videos)
+
+
+@bp.route("/index/<folder_id>")
+@bp.route("/<folder_id>")
+def folder_videos(folder_id):
+    if folder_id == '-1':
         videos = get_liked_videos()
-        return render_template("index.html", folders=folders, videos=videos)
     # channels = []
     # for folder in folders:
     #     channels.extend(folder.channels)
@@ -44,7 +51,7 @@ def index():
     # whole_videos.sort(key=lambda video: video.published_date, reverse=True)  #TODO: 이 코드가 굳이 여기에 있어야 할까?
 
     # videos = whole_videos[:15]
-
+    return render_template("index.html", videos=videos)
     
 
 
@@ -52,7 +59,4 @@ def index():
 @bp.route("/list")
 def list():
     
-    folders = ["Eng", "ジム", "日本語", "coffee"] # TODO: sidebar 데이터 중복 제거하기
-    
-
-    return render_template("list.html", folders=folders)
+    return render_template("list.html")
