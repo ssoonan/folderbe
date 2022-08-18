@@ -227,7 +227,23 @@ main {
   padding-bottom: 0;
 }
 
-.modal-content {
+.modal__content--createFolder {
+}
+
+.modal__footer--createFolder {
+  border-top: none;
+}
+
+.modal-header {
+  border-bottom: none;
+  padding-left: 1.5rem;
+}
+
+.modal__folder--label {
+  font-size: 1.4rem;
+}
+
+.modal__content--addChannel {
   height: 70vh;
   border-radius: .7%;
 }
@@ -243,16 +259,17 @@ main {
 .modal__search {
   margin-top: 2rem;
   display: flex;
+  padding-bottom: 1rem;
   border-bottom: var(--line);
   margin-right: 5rem;
   margin-bottom: 5rem;
-  margin-left: 1rem;
 }
 
 .modal__search--input {
   border: none;
   flex: 1;
   font-size: 1.5rem;
+  padding-left: 2rem;
 }
 
 .modal__search--input:focus::placeholder {
@@ -301,4 +318,10 @@ main {
 .modal__channel--name {
   margin-left: 3rem;
   font-size: 1.3rem;
+}
+
+.modal__footer--btn {
+  height: 3rem;
+  width: 5rem;
+  font-size: 1.4rem;
 }

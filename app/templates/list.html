@@ -3,14 +3,14 @@
 {% block content %}
 <main class="list__content">
 
-  <button class="list__plus-folder btn"><span>새 폴더 생성</span></button>
+  <button class="list__plus-folder btn" data-bs-toggle="modal" data-bs-target="#createFolder"><span>새 폴더 생성</span></button>
   <div class="folders">
-    {% for folder in folders %}
+    {% for folder in g.folders %}
     <div class="folder">
       <svg class="icon-folder-open">
         <use href="/static/svg/sprite.svg#icon-folder-open"></use>
       </svg>
-      <span class="folder__name">{{ folder }}</span>
+      <span class="folder__name">{{ folder.name }}</span>
       <div class="folder__hover--icon">
         <button class="folder__plus-channel btn btn-light" data-bs-toggle="modal"
           data-bs-target="#exampleModal"><span>채널 추가</span></button>
@@ -29,10 +29,32 @@
     {% endfor %}
   </div>
 
+  <div class="modal fade" id="createFolder" tabindex="-1" aria-labelledby="createFolderLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal__content--createFolder">
+        <div class="modal-header ">
+          <h3 class="modal-title" id="createFolderLabel">새 폴더 생성</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="modal__search">
+              <input type="text" class="modal__search--input" placeholder="폴더 이름">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer modal__footer--createFolder">
+          <button type="button" class="btn btn-secondary modal__footer--btn" data-bs-dismiss="modal">저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
-      <div class="modal-content">
+      <div class="modal-content  modal__content--addChannel">
         <div class="modal-header">
           <svg class="modal__icon-folder-open">
             <use href="/static/svg/sprite.svg#icon-folder-open"></use>
@@ -71,7 +93,7 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">저장</button>
+          <button type="button" class="btn btn-secondary modal__footer--btn" data-bs-dismiss="modal">저장</button>
         </div>
       </div>
     </div>
