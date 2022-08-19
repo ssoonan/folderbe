@@ -12,7 +12,7 @@ CREATE TABLE if not exists `User` (
 
 CREATE TABLE if not exists `Folder` (
   `id` int primary key auto_increment,
-  `name` varchar(20) not null,
+  `name` varchar(20) not null unique,
   `user_id` int not null,
   FOREIGN KEY (`user_id`) REFERENCES `User`(`id`)
   );
