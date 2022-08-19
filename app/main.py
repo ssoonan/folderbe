@@ -1,7 +1,8 @@
 import requests
 import time
 
-from flask import Blueprint, redirect, render_template, url_for, session, g
+from flask import Blueprint, redirect, render_template, url_for, session, g, \
+    request, flash
 
 
 from .model import Channel, Folder, LikeFolder, Video, make_example_videos
@@ -38,8 +39,9 @@ def index():
 def folder_videos(folder_id):
     if folder_id == '-1':
         videos = get_liked_videos()
+        return render_template("index.html", videos=videos)
     # channels = []
-    # for folder in folders:
+    # for folder in g.folders:
     #     channels.extend(folder.channels)
     # for channel in channels:
     # channels = get_whole_channels()
@@ -51,12 +53,20 @@ def folder_videos(folder_id):
     # whole_videos.sort(key=lambda video: video.published_date, reverse=True)  #TODO: 이 코드가 굳이 여기에 있어야 할까?
 
     # videos = whole_videos[:15]
-    return render_template("index.html", videos=videos)
+    # return render_template("index.html", videos=videos)
     
-
 
 
 @bp.route("/list")
 def list():
-    
     return render_template("list.html")
+
+
+@bp.route("/list", methods=['POST'])
+def create_folder():
+    folder_name = request.form['folder_name']
+    result = FolderDao.insert(Folder(folder_name, session['user_id']))
+    if not result:
+        flash("존재하는 폴더 이름입니다")
+        return redirect(url_for("main.list"))
+    return redirect(url_for("main.list"))

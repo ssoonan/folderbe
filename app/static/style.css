@@ -268,13 +268,13 @@ main {
   margin-top: 2rem;
   display: flex;
   padding-bottom: 1rem;
-  border-bottom: var(--line);
   margin-right: 5rem;
   margin-bottom: 5rem;
 }
 
 .modal__search--input {
   border: none;
+  border-bottom: var(--line);
   flex: 1;
   font-size: 1.5rem;
   padding-left: 2rem;
@@ -332,4 +332,6 @@ main {
   height: 3rem;
   width: 5rem;
   font-size: 1.4rem;
+  margin-right: 1rem;
+  margin-left: auto;
 }

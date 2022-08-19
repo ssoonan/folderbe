@@ -2,8 +2,8 @@
 
 {% block content %}
 <main class="list__content">
-
-  <button class="list__plus-folder btn" data-bs-toggle="modal" data-bs-target="#createFolder"><span>새 폴더 생성</span></button>
+  <button class="list__plus-folder btn" data-bs-toggle="modal" data-bs-target="#createFolder"><span>새 폴더
+      생성</span></button>
   <div class="folders">
     {% for folder in g.folders %}
     <div class="folder">
@@ -29,22 +29,23 @@
     {% endfor %}
   </div>
 
+
   <div class="modal fade" id="createFolder" tabindex="-1" aria-labelledby="createFolderLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content modal__content--createFolder">
         <div class="modal-header ">
           <h3 class="modal-title" id="createFolderLabel">새 폴더 생성</h4>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form>
-            <div class="modal__search">
-              <input type="text" class="modal__search--input" placeholder="폴더 이름">
+          <form id="createFolder--form" method="post" action="/list">
+            <div class="d-flex flex-column">
+              <input type="text" name="folder_name" class="modal__search modal__search--input" placeholder="폴더 이름">
+              <button class="btn btn-secondary modal__footer--btn" data-bs-dismiss="modal">저장</button>
             </div>
           </form>
         </div>
         <div class="modal-footer modal__footer--createFolder">
-          <button type="button" class="btn btn-secondary modal__footer--btn" data-bs-dismiss="modal">저장</button>
         </div>
       </div>
     </div>
@@ -104,3 +105,14 @@
 </main>
 
 {% endblock %}
+<script>
+  $(function () {
+    $('#createFolder--form').on('submit', function (e) {
+      $.ajax({
+        url: "/list",
+        type: "POST",
+        data: $('createFolder--form').serialize()
+      })
+    })
+  })
+</script>
