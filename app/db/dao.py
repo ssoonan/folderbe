@@ -1,5 +1,5 @@
-from sqlite3 import Cursor
 from typing import List
+import pymysql
 
 
 from ..model import Channel, Folder, User
@@ -30,6 +30,7 @@ class UserDao:
         cursor = get_db().cursor()
         cursor.execute(sql)
         get_db().commit()
+        user.user_id = cursor.lastrowid
         cursor.close()
 
     def update(user: User):
@@ -54,11 +55,27 @@ class FolderDao:
     def __init__(self) -> None:
         pass
 
-    def find_by_user(user: User) -> Folder:
-        pass
+    def find_by_user(user: User) -> List[Folder]:
+        sql = "select * from Folder where `user_id` = \"{}\"".format(user.user_id)
+        cursor = get_db().cursor()
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        folders = []
+        for result in results:
+            folders.append(Folder(result['name'], result['user_id'], result['id']))
+        return folders
     
     def insert(folder: Folder):
-        pass
+        sql = "insert into Folder (name, user_id) VALUES (%s, %s)"
+        cursor = get_db().cursor()
+        try:
+            cursor.execute(sql, (folder.name, folder.user_id))
+        except pymysql.err.IntegrityError:
+            return False
+        get_db().commit()
+        folder.folder_id = cursor.lastrowid
+        cursor.close()
+        return True
 
     def update_channels(folder: Folder, channels: List[Channel]):
         pass
