@@ -280,6 +280,14 @@ main {
   padding-left: 2rem;
 }
 
+.modal__search--error {
+  color: red;
+  font-size: 1.2rem;
+  margin-left: 2rem;
+  margin-top: -3rem;
+  visibility: visible;
+}
+
 .modal__search--input:focus::placeholder {
   color: transparent;
   transition: 0.2s;

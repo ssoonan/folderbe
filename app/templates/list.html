@@ -38,10 +38,11 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form id="createFolder--form" method="post" action="/list">
+          <form id="createFolder--form">
             <div class="d-flex flex-column">
               <input type="text" name="folder_name" class="modal__search modal__search--input" placeholder="폴더 이름">
-              <button class="btn btn-secondary modal__footer--btn" data-bs-dismiss="modal">저장</button>
+              <p id="folder--message"></p>
+              <button class="btn btn-secondary modal__footer--btn">저장</button>
             </div>
           </form>
         </div>
@@ -105,14 +106,28 @@
 </main>
 
 {% endblock %}
-<script>
-  $(function () {
-    $('#createFolder--form').on('submit', function (e) {
-      $.ajax({
-        url: "/list",
-        type: "POST",
-        data: $('createFolder--form').serialize()
-      })
+{% block scripts %}
+<script type="text/javascript">
+
+  const folderModal =  document.getElementById("createFolder--form");
+  folderModal.addEventListener("submit", function(e) {
+    e.preventDefault();
+    const payload = new FormData(folderModal);
+    fetch("/list", {
+      method: "POST",
+      body: payload
     })
+      .then(function(res) {
+        if (res.status == 400) {
+          const inputTag = document.querySelector("#folder--message");
+          inputTag.textContent = "이미 존재하는 폴더 이름입니다.";
+          inputTag.classList.add("modal__search--error");
+        }
+        if (res.redirected) {
+          window.location = res.url
+        }
+      })
+      
   })
 </script>
+{% endblock %}

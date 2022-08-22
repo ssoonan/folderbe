@@ -2,7 +2,7 @@ import requests
 import time
 
 from flask import Blueprint, redirect, render_template, url_for, session, g, \
-    request, flash
+    request, jsonify
 
 
 from .model import Channel, Folder, LikeFolder, Video, make_example_videos
@@ -67,6 +67,5 @@ def create_folder():
     folder_name = request.form['folder_name']
     result = FolderDao.insert(Folder(folder_name, session['user_id']))
     if not result:
-        flash("존재하는 폴더 이름입니다")
-        return redirect(url_for("main.list"))
+        return jsonify({"message": "중복된 이름"}), 400
     return redirect(url_for("main.list"))
