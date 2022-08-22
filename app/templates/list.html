@@ -112,6 +112,12 @@
   const folderModal =  document.getElementById("createFolder--form");
   folderModal.addEventListener("submit", function(e) {
     e.preventDefault();
+    if (!document.getElementsByClassName("modal__search--input")[0].value) {
+      const inputTag = document.querySelector("#folder--message");
+      inputTag.textContent = "폴더 이름을 입력하세요.";
+      inputTag.classList.add("modal__search--error");
+      return
+    };
     const payload = new FormData(folderModal);
     fetch("/list", {
       method: "POST",
