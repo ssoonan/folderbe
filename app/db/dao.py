@@ -76,6 +76,12 @@ class FolderDao:
         folder.folder_id = cursor.lastrowid
         cursor.close()
         return True
+    
+    def delete(folder: Folder):
+        sql = "delete from Folder where id = %s"
+        cursor = get_db().cursor()
+        cursor.execute(sql, (folder.folder_id))
+        get_db().commit()
 
     def update_channels(folder: Folder, channels: List[Channel]):
         pass
