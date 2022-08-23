@@ -18,7 +18,7 @@ def test_user_dao(app: Flask):
 
 def test_folder_dao(app: Flask):
     with app.app_context():
-        email = 'asd@gmail.com'
+        email = 'asd2@gmail.com'
         user1 = User('https://lh3.googleusercontent.com/a-/AFdZucpJYYcRKM4NmcwxOTsRh29eRdvpRCheNfKj0o6KRw=s96-c-rg-br100', '옥순환', email)
         UserDao.insert(user1)
         folder1 = Folder("테스트폴더1", user1.user_id)

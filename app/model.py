@@ -6,6 +6,9 @@ class User:
         self.email = email
         self.refresh_token = refresh_token
         self.user_id = user_id
+    
+    def __repr__(self) -> str:
+        return "user"
 
 
 class Channel:
@@ -17,6 +20,9 @@ class Channel:
     
     def set_playlist_id(self, playlist_id):
         self.playlist_id = playlist_id
+    
+    def __repr__(self) -> str:
+        return "channel"
 
 
 class Folder:
@@ -28,6 +34,9 @@ class Folder:
     
     def add_channels(self, channels):
         self.channels.extend(channels)
+    
+    def __repr__(self) -> str:
+        return "folder"
 
 
 class LikeFolder(Folder):
@@ -48,6 +57,9 @@ class Video:
     
     def get_video_url(self):
         return "https://www.youtube.com/embed/{}".format(self.video_id)
+    
+    def __repr__(self) -> str:
+        return "video"
 
 
 def make_example_videos():

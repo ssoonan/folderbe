@@ -69,5 +69,5 @@ def init_db_command():
 
 
 def init_app(app: Flask):
-    app.teardown_appcontext(close_db)
+    app.teardown_appcontext(close_db)  # 여기에 넣는 것만으로도 매 teardown 단계에서 close_db 함수가 실행됨
     app.cli.add_command(init_db_command)
