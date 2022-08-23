@@ -221,9 +221,10 @@ main {
 
 
 .folder__icon {
+  cursor: pointer;
   width: 2rem;
   height: 2rem;
-  fill: rgba(184, 184, 184, 0.897);
+  fill: var(--color-grey-dark-3);
   margin: 0 0.5rem
 }
 
