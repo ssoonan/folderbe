@@ -1,3 +1,4 @@
+from crypt import methods
 import requests
 import time
 
@@ -54,7 +55,7 @@ def folder_videos(folder_id):
 
     # videos = whole_videos[:15]
     # return render_template("index.html", videos=videos)
-    
+
 
 
 @bp.route("/list")
@@ -68,4 +69,13 @@ def create_folder():
     result = FolderDao.insert(Folder(folder_name, session['user_id']))
     if not result:
         return jsonify({"message": "중복된 이름"}), 400
-    return redirect(url_for("main.list"))
+    return jsonify({"message": "success"})
+
+
+@bp.route("/list", methods=["DELETE"])
+def delete_folder():
+    folder_id = request.json.get('id')
+    result = FolderDao.delete(folder_id)
+    if not result:
+        return jsonify({"message": "error"}), 400
+    return jsonify({"message": "success"})

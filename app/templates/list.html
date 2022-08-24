@@ -107,8 +107,8 @@
 {% block scripts %}
 <script type="text/javascript">
 
-  const folderModal =  document.getElementById("createFolder--form");
-  folderModal.addEventListener("submit", function(e) {
+  const folderForm =  document.getElementById("createFolder--form");
+  folderForm.addEventListener("submit", function(e) {
     e.preventDefault();
     if (!document.getElementsByClassName("modal__search--input")[0].value) {
       const inputTag = document.querySelector("#folder--message");
@@ -116,24 +116,29 @@
       inputTag.classList.add("modal__search--error");
       return
     };
-    const payload = new FormData(folderModal);
+    const payload = new FormData(folderForm);
     fetch("/list", {
       method: "POST",
       body: payload
     })
-      .then(function(res) {
+      .then(res => {
         if (res.status == 400) {
           const inputTag = document.querySelector("#folder--message");
           inputTag.textContent = "이미 존재하는 폴더 이름입니다.";
           inputTag.classList.add("modal__search--error");
         }
-        if (res.redirected) {
-          window.location = res.url
+        if (res.status == 200) {
+          window.location.reload()
         }
       }
     );
   });
-  document.addEventListener("click", function(event) {
+
+  const folderModal = document.getElementById("createFolder");
+  folderModal.addEventListener("shown.bs.modal", () => document.getElementsByName("folder_name")[0].focus());
+  const folderClass = document.querySelectorAll(".folder")
+  folderClass.forEach(function(folder, idx) {
+    folder.addEventListener("click", async function(event) {
     const targetId = event.target.id;
     if (targetId.startsWith('folderId')) {
       const folderId = targetId.split('-')[1];
@@ -145,15 +150,13 @@
         },
         body: JSON.stringify({"id": folderId})
       })
-        .then(function(res) {
-          if (res.status == 400) {
-            console.log("삭제 에러")
-        }
-          if (res.redirected) {
-            window.location = res.url
-        }
-      })
+        .then(res=> {
+          if (res.status == 200) {
+            window.location.reload()
+          }
+        })
     };
+  })
   })
 </script>
 {% endblock %}
