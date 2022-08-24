@@ -19,7 +19,7 @@
           <use href="/static/svg/sprite.svg#icon-pencil"></use>
         </svg>
         <svg class="folder__icon">
-          <use href="/static/svg/sprite.svg#icon-bin2"></use>
+          <use id="folderId-{{ folder.folder_id }}" href="/static/svg/sprite.svg#icon-bin2"></use>
         </svg>
 
       </div>
@@ -130,8 +130,30 @@
         if (res.redirected) {
           window.location = res.url
         }
+      }
+    );
+  });
+  document.addEventListener("click", function(event) {
+    const targetId = event.target.id;
+    if (targetId.startsWith('folderId')) {
+      const folderId = targetId.split('-')[1];
+      fetch("/list", {
+        method: "DELETE",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({"id": folderId})
       })
-      
+        .then(function(res) {
+          if (res.status == 400) {
+            console.log("삭제 에러")
+        }
+          if (res.redirected) {
+            window.location = res.url
+        }
+      })
+    };
   })
 </script>
 {% endblock %}
