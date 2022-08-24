@@ -82,7 +82,7 @@ def callback():
     
     return redirect(url_for("main.index"))
 
-
+# TODO: 1. refresh 토큰 session이 아닌 DB에서 2. redirect을 원래 main이 아닌 원래 url로 보내기
 @bp.route("/refresh_token")
 def refresh_token():
     params = {"client_id": CLIENT_ID,

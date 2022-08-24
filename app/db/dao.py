@@ -12,10 +12,13 @@ class Dao:
     def update(self, sql):
         try:
             with get_db().cursor() as cursor:
-                cursor.execute(sql)
+                result = cursor.execute(sql)
                 get_db().commit()
+                if not result:
+                    return False
                 return True
-        except pymysql.err.Error:
+        except pymysql.err.Error as e:  #TODO: 에러 로그 기록
+            print(e)
             return False
     
     def insert(self, sql, obj):
@@ -85,8 +88,8 @@ class FolderDao:
         sql = "insert into Folder (name, user_id) VALUES (\"{}\", \"{}\")".format(folder.name, folder.user_id)
         return dao.insert(sql, folder)
     
-    def delete(folder: Folder):
-        sql = "delete from Folder where id = \"{}\"".format(folder.folder_id)
+    def delete(folder_id):
+        sql = "delete from Folder where id = \"{}\"".format(folder_id)
         return dao.update(sql)
 
     def update_channels(folder: Folder, channels: List[Channel]):
