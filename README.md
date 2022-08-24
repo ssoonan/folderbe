@@ -16,6 +16,17 @@ git commit 메시지 규약 중요하지만, 경험상 대부분의 커밋 타�
 `UI`, `Back`, `Deploy` 이 3가지 키워드를 구현 타입으로 활용해볼 예정
 
 
+## 리팩토링 과정
+
+### DAO 직접 구현
+
+ORM을 직접 가져다 쓰는 게 아닌 최소한의 wrapper인 pymysql을 활용해 DaO를 직접 구현하였다.  
+이 과정에서 mysql connection, cursor를 open 및 close를 해야했다.  
+
+이 부분이 insert, update 등 기능마다 중복이 일어나서 공통부분을 DaO라는 클래스로 만들고  
+UserDaO, FolderDao 등이 dao를 싱글턴으로 가져와 활용하게 리팩토링 했다. 
+
+
 ## 겪었던 문제 해결
 
 ### session이 유지 되지 않던 문제
