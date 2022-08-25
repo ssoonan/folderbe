@@ -26,9 +26,19 @@ class Dao:
             with get_db().cursor() as cursor:
                 cursor.execute(sql)
                 get_db().commit()
-                setattr(obj, "{}_id".format(obj), cursor.lastrowid)
+                setattr(obj, "{}_id".format(obj), cursor.lastrowid)  # insert된 객체의 id 세팅
                 return True
         except pymysql.err.IntegrityError:
+            return False
+    
+    def insert_all(self, sql, param):
+        try:
+            with get_db().cursor() as cursor:
+                cursor.executemany(sql, param)
+                get_db().commit()
+                return True
+        except pymysql.err.Error as e:
+            print(e)
             return False
 
     def query_one(self, sql):
@@ -66,8 +76,22 @@ class UserDao:
 class ChannelDao:
     dao = dao
 
+    def insert_whole_channels(channels: List[Channel], user: User):
+        channels = [[channel.channel_id, channel.icon_img, channel.name] for channel in channels]
+        channel_sql = "insert into Channel (`id`, `icon_img`, `name`) Values (%s, %s, %s)"
+        dao.insert_all(channel_sql, channels)
+        channel_user_sql = "insert into User_Channel (`user_id`, `channel_id`) VALUES (%s, %s)"
+        dao.insert_all(channel_user_sql, [[user.user_id, channel[0]] for channel in channels])
+
     def find_channels_from_user(user: User) -> List[Channel]:
-        pass
+        sql = """select c.id, c.playlist_id, c.name, c.icon_img from Channel c\
+                inner join User_Channel u_c on u_c.channel_id = c.id\
+                inner join User u on u.id = u_c.user_id where u.id = \"{}\"""".format(user.user_id)
+        results = dao.query_all(sql)
+        channels = []
+        for result in results:
+            channels.append(Channel(result['id'], result['icon_img'], result['name']))
+        return channels
     
     def find_channels_from_folder(folder: Folder) -> List[Channel]:
         pass

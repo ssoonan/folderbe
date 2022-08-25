@@ -1,5 +1,5 @@
-from app.db.dao import FolderDao, UserDao
-from app.model import Folder, User
+from app.db.dao import ChannelDao, FolderDao, UserDao
+from app.model import Folder, User, Channel
 from flask import Flask
 
 
@@ -37,4 +37,17 @@ def test_folder_dao(app: Flask):
         assert "테스트폴더1" not in [folder.name for folder in folders]
         assert "테스트폴더2" not in [folder.name for folder in folders]
 
+
+def test_channel_dao(app: Flask):
+    with app.app_context():
+        email = 'asd23@gmail.com'
+        user1 = User('https://lh3.googleusercontent.com/a-/AFdZucpJYYcRKM4NmcwxOTsRh29eRdvpRCheNfKj0o6KRw=s96-c-rg-br100', '순환', email)
+        UserDao.insert(user1)
+        channels = [Channel("UC3IZKseVpdzPSBaWxBxundA", "https://yt3.ggpht.com/ytc/AKedOLRRjGuN-GPWubsrcVN8jyhnELYRIfWG03gBR7fGrg=s68-c-k-c0x00ffffff-no-rj", "HYBE LABELS"), 
+                    Channel("UCyn-K7rZLXjGl7VXGweIlcA", "https://yt3.ggpht.com/ytc/AKedOLSTz7hqk6t2kUEgGF5Ote28_wirhNLfwfgHBzWTvw=s88-c-k-c0x00ffffff-no-rj", "백종원의 요리비책 Paik's Cuisine")]
+        
+        ChannelDao.insert_whole_channels(channels, user1)
+        channels = ChannelDao.find_channels_from_user(user1)
+        assert "HYBE LABELS" in [channel.name for channel in channels]
+        
 
