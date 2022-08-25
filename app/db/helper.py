@@ -64,6 +64,7 @@ def close_db(e=None):
 
 @click.command('init-db')
 def init_db_command():
+    get_db().cursor().execute("DROP schema if exists `folderbe`")
     init_db()
     click.echo("database is initialized")
 

@@ -25,17 +25,18 @@ CREATE TABLE if not exists `Channel` (
 );
 
 CREATE TABLE if not exists `Folder_Channel` (
-`id` int primary key,
+`id` int primary key auto_increment,
 `channel_id` varchar(200) not null,
 `folder_id` int not null,
 FOREIGN KEY (`channel_id`) REFERENCES `Channel`(`id`),
 FOREIGN KEY (`folder_id`) REFERENCES `Folder`(`id`)
 );
 
-CREATE TABLE if not exists 'User_Channel' (
-  `id` int primary key,
+
+CREATE TABLE if not exists `User_Channel` (
+  `id` int primary key auto_increment,
   `user_id` int not null,
   `channel_id` varchar(200) not null,
   foreign key (`user_id`) REFERENCES `User`(`id`),
   foreign key (`channel_id`) REFERENCES `Channel`(`id`)
-)
+);
