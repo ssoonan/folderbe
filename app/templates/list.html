@@ -14,14 +14,16 @@
       <div class="folder__hover--icon">
         <button class="folder__plus-channel btn btn-light" data-bs-toggle="modal"
           data-bs-target="#exampleModal"><span>채널 추가</span></button>
-
-        <svg class="folder__icon">
-          <use href="/static/svg/sprite.svg#icon-pencil"></use>
-        </svg>
-        <svg class="folder__icon">
-          <use id="folderId-{{ folder.folder_id }}" href="/static/svg/sprite.svg#icon-bin2"></use>
-        </svg>
-
+        <!-- <div> -->
+          <svg class="folder__icon">
+            <use href="/static/svg/sprite.svg#icon-pencil"></use>
+          </svg>
+        <!-- </div>
+        <div> -->
+          <svg class="folder__icon">
+            <use id="folderId_{{ folder.folder_id }}" href="/static/svg/sprite.svg#icon-bin2"></use>
+          </svg>
+        <!-- </div> -->
       </div>
     </div>
     {% endfor %}
@@ -107,8 +109,8 @@
 {% block scripts %}
 <script type="text/javascript">
 
-  const folderForm =  document.getElementById("createFolder--form");
-  folderForm.addEventListener("submit", function(e) {
+  const folderForm = document.getElementById("createFolder--form");
+  folderForm.addEventListener("submit", function (e) {
     e.preventDefault();
     if (!document.getElementsByClassName("modal__search--input")[0].value) {
       const inputTag = document.querySelector("#folder--message");
@@ -131,32 +133,36 @@
           window.location.reload()
         }
       }
-    );
+      );
   });
 
   const folderModal = document.getElementById("createFolder");
   folderModal.addEventListener("shown.bs.modal", () => document.getElementsByName("folder_name")[0].focus());
   const folderClass = document.querySelectorAll(".folder")
-  folderClass.forEach(function(folder, idx) {
-    folder.addEventListener("click", async function(event) {
-    const targetId = event.target.id;
-    if (targetId.startsWith('folderId')) {
-      const folderId = targetId.split('-')[1];
-      fetch("/list", {
-        method: "DELETE",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({"id": folderId})
-      })
-        .then(res=> {
-          if (res.status == 200) {
-            window.location.reload()
-          }
+  folderClass.forEach(function (folder, idx) {
+    folder.addEventListener("click", function (event) {
+      const targetId = event.target.id;
+      if (targetId.startsWith('folderId')) {
+        const folderId = targetId.split('_')[1];
+        if (parseInt(folderId) == -1) {
+          alert("좋아요 표시 영상 폴더는 삭제할 수 없습니다")
+          return
+        }
+        fetch("/list", {
+          method: "DELETE",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ "id": folderId })
         })
-    };
-  })
+          .then(res => {
+            if (res.status == 200) {
+              window.location.reload()
+            }
+          })
+      };
+    })
   })
 </script>
 {% endblock %}
