@@ -15,6 +15,9 @@ def test_user_dao(app: Flask):
         UserDao.update(user1)  # update 파트
         assert UserDao.find_by(email, key="email").refresh_token == "after token"
 
+        UserDao.delete(user1.user_id)
+        assert UserDao.find_by(email, key="email") is None
+
 
 def test_folder_dao(app: Flask):
     with app.app_context():
@@ -37,6 +40,8 @@ def test_folder_dao(app: Flask):
         assert "테스트폴더1" not in [folder.name for folder in folders]
         assert "테스트폴더2" not in [folder.name for folder in folders]
 
+        UserDao.delete(user1.user_id)
+
 
 def test_channel_dao(app: Flask):
     with app.app_context():
@@ -50,4 +55,6 @@ def test_channel_dao(app: Flask):
         channels = ChannelDao.find_channels_from_user(user1)
         assert "HYBE LABELS" in [channel.name for channel in channels]
         
+        ChannelDao.delete_channels_for_user(user1.user_id)
+        UserDao.delete(user1.user_id)
 

@@ -26,7 +26,8 @@ class Dao:
             with get_db().cursor() as cursor:
                 cursor.execute(sql)
                 get_db().commit()
-                setattr(obj, "{}_id".format(obj), cursor.lastrowid)  # insert된 객체의 id 세팅
+                obj_name = str(obj).split('_')[0]
+                setattr(obj, "{}_id".format(obj_name), cursor.lastrowid)  # insert된 객체의 id 세팅
                 return True
         except pymysql.err.IntegrityError:
             return False
@@ -73,6 +74,10 @@ class UserDao:
         sql = "update User SET `img` = \"{}\", `refresh_token` = \"{}\" where `email` = \"{}\"".format(user.user_img, user.refresh_token, user.email)
         dao.update(sql)
 
+    def delete(user_id):
+        sql = "delete from User where id = \"{}\"".format(user_id)
+        return dao.update(sql)
+
 class ChannelDao:
     dao = dao
 
@@ -83,7 +88,7 @@ class ChannelDao:
         channel_user_sql = "insert into User_Channel (`user_id`, `channel_id`) VALUES (%s, %s)"
         dao.insert_all(channel_user_sql, [[user.user_id, channel[0]] for channel in channels])
 
-    def find_channels_from_user(user: User) -> List[Channel]:
+    def find_channels_from_user(user: User) -> List[Channel]:  # TODO: 이 기능은 어떤 Dao에 있는 게 맞는 건지,,?
         sql = """select c.id, c.playlist_id, c.name, c.icon_img from Channel c\
                 inner join User_Channel u_c on u_c.channel_id = c.id\
                 inner join User u on u.id = u_c.user_id where u.id = \"{}\"""".format(user.user_id)
@@ -95,6 +100,10 @@ class ChannelDao:
     
     def find_channels_from_folder(folder: Folder) -> List[Channel]:
         pass
+
+    def delete_channels_for_user(user_id):
+        sql = "delete from User_Channel where user_id = \"{}\"".format(user_id)
+        dao.update(sql)
 
 
 class FolderDao:

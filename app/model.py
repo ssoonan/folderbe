@@ -1,14 +1,15 @@
 
 class User:
-    def __init__(self, user_img, name, email, refresh_token=None, user_id=None):
+    def __init__(self, user_img, name, email, refresh_token=None, user_id=None, channels=None):
         self.user_img = user_img
         self.name = name
         self.email = email
         self.refresh_token = refresh_token
         self.user_id = user_id
+        self.channels = channels
     
     def __repr__(self) -> str:
-        return "user"
+        return "user_{}".format(self.name)
 
 
 class Channel:
@@ -17,12 +18,9 @@ class Channel:
         self.icon_img = icon_img
         self.name = name
         self.playlist_id = playlist_id
-    
-    def set_playlist_id(self, playlist_id):
-        self.playlist_id = playlist_id
-    
+
     def __repr__(self) -> str:
-        return "channel"
+        return "channel_{}".format(self.name)
 
 
 class Folder:
@@ -36,7 +34,7 @@ class Folder:
         self.channels.extend(channels)
     
     def __repr__(self) -> str:
-        return "folder"
+        return "folder_{}".format(self.name)
 
 
 class LikeFolder(Folder):
@@ -59,7 +57,7 @@ class Video:
         return "https://www.youtube.com/embed/{}".format(self.video_id)
     
     def __repr__(self) -> str:
-        return "video"
+        return "video_{}".format(self.title)
 
 
 def make_example_videos():
