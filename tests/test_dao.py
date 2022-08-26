@@ -31,8 +31,8 @@ def test_folder_dao(app: Flask):
         assert "테스트폴더1" in [folder.name for folder in folders]
         assert "테스트폴더2" in [folder.name for folder in folders]
 
-        FolderDao.delete(folder1)
-        FolderDao.delete(folder2)
+        FolderDao.delete(folder1.folder_id)
+        FolderDao.delete(folder2.folder_id)
         folders = FolderDao.find_by_user(user1)
         assert "테스트폴더1" not in [folder.name for folder in folders]
         assert "테스트폴더2" not in [folder.name for folder in folders]
