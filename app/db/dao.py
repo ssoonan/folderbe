@@ -69,7 +69,7 @@ class UserDao:
         sql = """insert into User (`name`, `img`, `email`, `refresh_token`) VALUES ("{}", "{}", "{}", "{}")""".format(user.name, user.user_img, user.email, user.refresh_token)
         dao.insert(sql, user)
 
-    def update(user: User):
+    def update(user: User):  # TODO: 원하는 값만 넣어서 업데이트 할 수는 없나?
         sql = "update User SET `img` = \"{}\", `refresh_token` = \"{}\" where `email` = \"{}\"".format(user.user_img, user.refresh_token, user.email)
         dao.update(sql)
 
@@ -78,7 +78,7 @@ class ChannelDao:
 
     def insert_whole_channels(channels: List[Channel], user: User):
         channels = [[channel.channel_id, channel.icon_img, channel.name] for channel in channels]
-        channel_sql = "insert into Channel (`id`, `icon_img`, `name`) Values (%s, %s, %s)"
+        channel_sql = "insert ignore into Channel (`id`, `icon_img`, `name`) Values (%s, %s, %s)"
         dao.insert_all(channel_sql, channels)
         channel_user_sql = "insert into User_Channel (`user_id`, `channel_id`) VALUES (%s, %s)"
         dao.insert_all(channel_user_sql, [[user.user_id, channel[0]] for channel in channels])
