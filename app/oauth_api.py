@@ -1,6 +1,4 @@
-from distutils.command.upload import upload
-from urllib import response
-from flask import jsonify, session, url_for, redirect
+from flask import jsonify, session, url_for, redirect, Response, abort
 from .model import Channel, Video
 import requests
 
@@ -51,7 +49,7 @@ def request_api(http_method, api_url, params):
     headers = {"Authorization": "Bearer " + session.get('access_token', '')}
     response = http_method(api_url, params=params, headers=headers)
     if response.status_code != 200:
-        return jsonify({"error": {"message": "quota excedded"}})  # TODO: 403 에러 처리 
+        return abort(401)
     return response.json()
 
 

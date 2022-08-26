@@ -1,9 +1,7 @@
-from crypt import methods
-import requests
 import time
 
 from flask import Blueprint, redirect, render_template, url_for, session, g, \
-    request, jsonify
+    request, jsonify, Response
 
 
 from .model import Channel, Folder, LikeFolder, Video, make_example_videos
@@ -27,6 +25,13 @@ def check_access_token():
     folders.insert(0, LikeFolder())
     g.folders = folders
 
+
+@bp.after_request
+def after_api_auth(response: Response):
+    if response.status_code == 401:
+        return redirect(url_for("auth.authorize"))
+    return response
+    
 
 @bp.route("/index")
 @bp.route("/")
