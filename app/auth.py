@@ -1,9 +1,10 @@
 import imp
-from flask import Blueprint, redirect, request, session, url_for
+from flask import Blueprint, redirect, request, session, url_for, Response
 from dotenv import load_dotenv
 
-from app.db.dao import UserDao
+from .db.dao import ChannelDao, UserDao
 from .model import User
+from .oauth_api import get_whole_channels
 import requests
 import os
 import time
@@ -23,8 +24,6 @@ SCOPES = ["https://www.googleapis.com/auth/youtube",
           "https://www.googleapis.com/auth/userinfo.profile",
           "https://www.googleapis.com/auth/userinfo.email"]
 
-
-
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
@@ -37,6 +36,25 @@ def parse_id_token(token: str) -> dict:
     padded = payload + '=' * (4 - len(payload) % 4)
     decoded = base64.b64decode(padded)
     return json.loads(decoded)
+
+
+def id_token_to_user(user_info, refresh_token) -> User:
+    user_name = user_info['name']
+    user_img = user_info['picture']
+    user_email = user_info['email']
+    user = UserDao.find_by(user_email, key='email')
+    if user is None:
+        user = User(user_img, user_name, user_email, refresh_token)
+        UserDao.insert(user)
+    else:  # TODO: 업데이트 하는 게 너무 장황한데?
+        user.user_img = user_img
+        user.refresh_token = refresh_token
+        UserDao.update(user)
+    session['user_name'] = user_name
+    session['user_email'] = user_email
+    session['user_id'] = user.user_id
+    session['user_img'] = user_img
+    return user
 
 
 @bp.route("/authorize")
@@ -64,22 +82,10 @@ def callback():
 
     # 회원가입 확인
     user_info = parse_id_token(response['id_token'])
-    user_name = user_info['name']
-    user_img = user_info['picture']
-    user_email = user_info['email']
-    user = UserDao.find_by(user_email, key='email')
-    if user is None:
-        user = User(user_img, user_name, user_email, response['refresh_token'])
-        UserDao.insert(user)
-    else:  # TODO: 업데이트 하는 게 너무 장황한데?
-        user.user_img = user_img
-        user.refresh_token = response['refresh_token']
-        UserDao.update(user)
-    session['user_name'] = user_name
-    session['user_email'] = user_email
-    session['user_id'] = user.user_id
-    session['user_img'] = user_img
+    user = id_token_to_user(user_info, response['refresh_token'])
     
+    channels = get_whole_channels()
+    ChannelDao.insert_whole_channels(channels, user)
     return redirect(url_for("main.index"))
 
 # TODO: 1. refresh 토큰 session이 아닌 DB에서 2. redirect을 원래 main이 아닌 원래 url로 보내기
@@ -93,6 +99,13 @@ def refresh_token():
     if response.status_code != 200:
         return redirect(url_for("auth.authorize")) # refresh token도 만료 되면 재인증을 거쳐야함. 
     session.permanent = True
-    session['access_token'] = response.json()['access_token']  # 이 때 id_token도 같이 오긴 하네
-    session['expired_at'] = time.time() + response.json()['expires_in']  # 토큰 만료시간 기입
+    response = response.json()
+    session['access_token'] = response['access_token']  # 이 때 id_token도 같이 오긴 하네
+    session['expired_at'] = time.time() + response['expires_in']  # 토큰 만료시간 기입
+
+    user_info = parse_id_token(response['id_token'])
+    user = id_token_to_user(user_info, session.get('refresh_token', ''))
+    
+    channels = get_whole_channels()
+    ChannelDao.insert_whole_channels(channels, user)
     return redirect(url_for("main.index"))
