@@ -74,7 +74,7 @@
           <form id="folderChannel--form">
             {% for channel in channels %}
             <label class="modal__channel d-flex align-items-center pt-2 pb-2">
-              <input class="modal__channel--checkbox" type="checkbox" name=channel value="{{ channel.channel_id }}">
+              <input data-folder_ids="{{ channel.folder_ids }}" class="modal__channel--checkbox" type="checkbox" name=channel value="{{ channel.channel_id }}">
               <div class=""><img class="modal__channel--avatar" src="{{ channel.icon_img }}" alt=""></div>
               <span class="modal__channel--name">{{ channel.name }}</span>
             </label>
@@ -148,9 +148,25 @@
       const folderId = this.id.split('_')[1];
       const tagName = event.target.tagName.toLowerCase();
       const parentTagName = event.target.parentElement.tagName.toLowerCase();
+      // 채널 추가 클릭 시의 행동
       if ( tagName === "button" || parentTagName === "button") {
           const folderChannelForm = document.getElementById("folderChannel--form");
           folderChannelForm.dataset.folderId = folderId;
+          const channels = document.querySelectorAll(".modal__channel--checkbox");
+          for (let channel of channels) {
+            let folderIds = channel.dataset.folder_ids;
+            if (folderIds === "None") {
+              channel.checked = false;
+              continue
+            }
+            folderIds = JSON.parse(folderIds.replace(/['"]+/g, ''));  // string인 folder_ids를 array 형태로
+            if (folderIds.includes(parseInt(folderId))) {
+              channel.checked = true;
+            }
+            else {
+              channel.checked = false;
+            }
+          }
       }
 
       if (event.target.className.baseVal == 'folder__remove') {

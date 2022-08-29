@@ -1,5 +1,5 @@
 from app.db.dao import ChannelDao, FolderDao, UserDao
-from app.model import Folder, User, Channel
+from app.db.model import Folder, User, Channel
 from flask import Flask
 
 

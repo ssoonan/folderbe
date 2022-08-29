@@ -13,11 +13,12 @@ class User:
 
 
 class Channel:
-    def __init__(self, channel_id, icon_img, name, playlist_id=None):
+    def __init__(self, channel_id, icon_img, name, playlist_id=None, folder_ids=[]):
         self.channel_id = channel_id
         self.icon_img = icon_img
         self.name = name
         self.playlist_id = playlist_id
+        self.folder_ids = folder_ids
 
     def __repr__(self) -> str:
         return "channel_{}".format(self.name)

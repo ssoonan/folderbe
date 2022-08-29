@@ -4,7 +4,7 @@ from functools import wraps
 import pymysql
 
 
-from ..model import Channel, Folder, User
+from .model import Channel, Folder, User
 from .helper import get_db
 
 
@@ -94,18 +94,30 @@ class ChannelDao:
         dao.insert_all(sql, channel_ids)
 
 
-    def find_channels_from_user(user: User) -> List[Channel]:  # TODO: 이 기능은 어떤 Dao에 있는 게 맞는 건지,,?
-        sql = """select c.id, c.playlist_id, c.name, c.icon_img from Channel c\
-                inner join User_Channel u_c on u_c.channel_id = c.id\
-                inner join User u on u.id = u_c.user_id where u.id = \"{}\"""".format(user.user_id)
+    def find_channels_from_user(user: User) -> List[Channel]:  # 사용자의 채널을 return 하는데, 각 채널의 folder_ids까지 묶어서 한 번에 return
+        sql = """select c.id, c.playlist_id, c.name, c.icon_img,\
+                 group_concat(f_c.folder_id) as folder_ids from Channel c\
+                 inner join User_Channel u_c on u_c.channel_id = c.id\
+                 inner join User u on u.id = u_c.user_id\
+                 left join Folder_Channel f_c on f_c.channel_id = c.id\
+                 where u.id = \"{}\" group by c.id""".format(user.user_id)
+        results = dao.query_all(sql)
+        channels = []
+        for result in results:
+            folder_ids = result.get('folder_ids')
+            if folder_ids is not None:
+                folder_ids = folder_ids.split(',')
+            channels.append(Channel(result['id'], result['icon_img'], result['name'], folder_ids=folder_ids))
+        return channels
+    
+    def find_channels_from_folder(folder_id) -> List[Channel]:
+        sql = """select * from Channel c inner join Folder_Channel f_c\
+                 on f_c.channel_id = c.id where f_c.folder_id = \"{}\"""".format(folder_id)
         results = dao.query_all(sql)
         channels = []
         for result in results:
             channels.append(Channel(result['id'], result['icon_img'], result['name']))
         return channels
-    
-    def find_channels_from_folder(folder: Folder) -> List[Channel]:
-        pass
 
     def delete_channels_for_user(user_id):
         sql = "delete from User_Channel where user_id = \"{}\"".format(user_id)
