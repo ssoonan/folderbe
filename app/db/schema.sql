@@ -12,7 +12,7 @@ CREATE TABLE if not exists `User` (
 
 CREATE TABLE if not exists `Folder` (
   `id` int primary key auto_increment,
-  `name` varchar(20) not null unique,
+  `name` varchar(20) not null,
   `user_id` int not null,
   FOREIGN KEY (`user_id`) REFERENCES `User`(`id`)
   );
@@ -25,18 +25,18 @@ CREATE TABLE if not exists `Channel` (
 );
 
 CREATE TABLE if not exists `Folder_Channel` (
-`id` int primary key auto_increment,
 `channel_id` varchar(200) not null,
 `folder_id` int not null,
 FOREIGN KEY (`channel_id`) REFERENCES `Channel`(`id`),
 FOREIGN KEY (`folder_id`) REFERENCES `Folder`(`id`)
+primary key (`channel_id`, `folder_id`)
 );
 
 
 CREATE TABLE if not exists `User_Channel` (
-  `id` int primary key auto_increment,
   `user_id` int not null,
   `channel_id` varchar(200) not null,
   foreign key (`user_id`) REFERENCES `User`(`id`),
   foreign key (`channel_id`) REFERENCES `Channel`(`id`)
+  primary key (`user_id`, `channel_id`)
 );

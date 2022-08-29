@@ -6,7 +6,7 @@
       생성</span></button>
   <div class="folders">
     {% for folder in g.folders %}
-    <div class="folder">
+    <div class="folder" id="folderId_{{ folder.folder_id }}">
       <svg class="icon-folder-open">
         <use href="/static/svg/sprite.svg#icon-folder-open"></use>
       </svg>
@@ -15,14 +15,14 @@
         <button class="folder__plus-channel btn btn-light" data-bs-toggle="modal"
           data-bs-target="#exampleModal"><span>채널 추가</span></button>
         <!-- <div> -->
-          <svg class="folder__icon">
-            <use href="/static/svg/sprite.svg#icon-pencil"></use>
-          </svg>
+        <svg class="folder__icon">
+          <use class="folder__edit" href="/static/svg/sprite.svg#icon-pencil"></use>
+        </svg>
         <!-- </div>
         <div> -->
-          <svg class="folder__icon">
-            <use id="folderId_{{ folder.folder_id }}" href="/static/svg/sprite.svg#icon-bin2"></use>
-          </svg>
+        <svg class="folder__icon">
+          <use class="folder__remove" href="/static/svg/sprite.svg#icon-bin2"></use>
+        </svg>
         <!-- </div> -->
       </div>
     </div>
@@ -71,31 +71,18 @@
             </svg>
             <input type="text" class="modal__search--input" placeholder="검색">
           </div>
-          <label class="modal__channel d-flex align-items-center pt-2 pb-2">
-            <input class="modal__channel--checkbox" type="checkbox">
-            <div class=""><img class="modal__channel--avatar"
-                src="https://yt3.ggpht.com/ytc/AKedOLSuecR9F68V1OFY9hrKoK-xxU79IVXgGCpf33RO=s88-c-k-c0x00ffffff-no-rj"
-                alt=""></div>
-            <span class="modal__channel--name">남자 커피 Namja Coffee</span>
-          </label>
-          <label class="modal__channel d-flex align-items-center pt-2 pb-2">
-            <input class="modal__channel--checkbox" type="checkbox">
-            <div class=""><img class="modal__channel--avatar"
-                src="https://yt3.ggpht.com/ytc/AKedOLSuecR9F68V1OFY9hrKoK-xxU79IVXgGCpf33RO=s88-c-k-c0x00ffffff-no-rj"
-                alt=""></div>
-            <span class="modal__channel--name">남자 커피 Namja Coffee</span>
-          </label>
-          <label class="modal__channel d-flex align-items-center pt-2 pb-2">
-            <input class="modal__channel--checkbox" type="checkbox">
-            <div class=""><img class="modal__channel--avatar"
-                src="https://yt3.ggpht.com/ytc/AKedOLSuecR9F68V1OFY9hrKoK-xxU79IVXgGCpf33RO=s88-c-k-c0x00ffffff-no-rj"
-                alt=""></div>
-            <span class="modal__channel--name">남자 커피 Namja Coffee</span>
-          </label>
-
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary modal__footer--btn" data-bs-dismiss="modal">저장</button>
+          <form id="folderChannel--form">
+            {% for channel in channels %}
+            <label class="modal__channel d-flex align-items-center pt-2 pb-2">
+              <input class="modal__channel--checkbox" type="checkbox" name=channel value="{{ channel.channel_id }}">
+              <div class=""><img class="modal__channel--avatar" src="{{ channel.icon_img }}" alt=""></div>
+              <span class="modal__channel--name">{{ channel.name }}</span>
+            </label>
+            {% endfor %}
+            <div class="modal-footer">
+              <button class="btn btn-secondary modal__footer--btn" data-bs-dismiss="modal">저장</button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -119,7 +106,7 @@
       return
     };
     const payload = new FormData(folderForm);
-    fetch("/list", {
+    fetch("/folder_list", {
       method: "POST",
       body: payload
     })
@@ -136,19 +123,42 @@
       );
   });
 
+  const folderChannelForm = document.getElementById("folderChannel--form");
+  folderChannelForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const payload = new FormData(folderChannelForm);
+    payload.append("folderId", folderChannelForm.dataset.folderId)
+    fetch("/insert_channels", {
+      method: 'POST',
+      body: payload
+    })
+      .then(res => {
+        console.log(res)
+      })
+  })
+
+  // 폴더 생성 시 input에 autofocus
   const folderModal = document.getElementById("createFolder");
   folderModal.addEventListener("shown.bs.modal", () => document.getElementsByName("folder_name")[0].focus());
+
+
   const folderClass = document.querySelectorAll(".folder")
   folderClass.forEach(function (folder, idx) {
     folder.addEventListener("click", function (event) {
-      const targetId = event.target.id;
-      if (targetId.startsWith('folderId')) {
-        const folderId = targetId.split('_')[1];
+      const folderId = this.id.split('_')[1];
+      const tagName = event.target.tagName.toLowerCase();
+      const parentTagName = event.target.parentElement.tagName.toLowerCase();
+      if ( tagName === "button" || parentTagName === "button") {
+          const folderChannelForm = document.getElementById("folderChannel--form");
+          folderChannelForm.dataset.folderId = folderId;
+      }
+
+      if (event.target.className.baseVal == 'folder__remove') {
         if (parseInt(folderId) == -1) {
           alert("좋아요 표시 영상 폴더는 삭제할 수 없습니다")
           return
         }
-        fetch("/list", {
+        fetch("/folder_list", {
           method: "DELETE",
           headers: {
             'Accept': 'application/json',
@@ -161,7 +171,7 @@
               window.location.reload()
             }
           })
-      };
+      }
     })
   })
 </script>

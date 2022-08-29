@@ -85,8 +85,14 @@ class ChannelDao:
         channels = [[channel.channel_id, channel.icon_img, channel.name] for channel in channels]
         channel_sql = "insert ignore into Channel (`id`, `icon_img`, `name`) Values (%s, %s, %s)"
         dao.insert_all(channel_sql, channels)
-        channel_user_sql = "insert into User_Channel (`user_id`, `channel_id`) VALUES (%s, %s)"
+        channel_user_sql = "insert ignore into User_Channel (`user_id`, `channel_id`) VALUES (%s, %s)"
         dao.insert_all(channel_user_sql, [[user.user_id, channel[0]] for channel in channels])
+
+    def insert_channels_for_folder(channel_ids: List[str], folder_id):
+        sql = "insert ignore into Folder_Channel (`channel_id`, `folder_id`) VALUES (%s, %s)"
+        channel_ids = [[channel_id, folder_id] for channel_id in channel_ids]
+        dao.insert_all(sql, channel_ids)
+
 
     def find_channels_from_user(user: User) -> List[Channel]:  # TODO: 이 기능은 어떤 Dao에 있는 게 맞는 건지,,?
         sql = """select c.id, c.playlist_id, c.name, c.icon_img from Channel c\

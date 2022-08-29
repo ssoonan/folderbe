@@ -1,4 +1,6 @@
 import time
+import asyncio
+import httpx
 
 from flask import Blueprint, redirect, render_template, url_for, session, g, \
     request, jsonify, Response
@@ -6,7 +8,7 @@ from flask import Blueprint, redirect, render_template, url_for, session, g, \
 
 from .model import Channel, Folder, LikeFolder, Video, make_example_videos
 from .oauth_api import  get_liked_videos, get_playlist_from_channel, get_videos_from_channel, get_whole_channels, request_api
-from .db.dao import FolderDao, UserDao
+from .db.dao import ChannelDao, FolderDao, UserDao
 
 
 bp = Blueprint('main', __name__, )
@@ -23,6 +25,7 @@ def check_access_token():
     user = UserDao.find_by(session['user_id'], key="id")
     folders = FolderDao.find_by_user(user)
     folders.insert(0, LikeFolder())
+    g.user = user
     g.folders = folders
 
 
@@ -62,13 +65,13 @@ def folder_videos(folder_id):
     # return render_template("index.html", videos=videos)
 
 
-
-@bp.route("/list")
+@bp.route("/folder_list")
 def list():
-    return render_template("list.html")
+    channels = ChannelDao.find_channels_from_user(g.user)
+    return render_template("list.html", channels=channels)
 
 
-@bp.route("/list", methods=['POST'])
+@bp.route("/folder_list", methods=['POST'])
 def create_folder():
     folder_name = request.form['folder_name']
     result = FolderDao.insert(Folder(folder_name, session['user_id']))
@@ -77,10 +80,18 @@ def create_folder():
     return jsonify({"message": "success"})
 
 
-@bp.route("/list", methods=["DELETE"])
+@bp.route("/folder_list", methods=["DELETE"])
 def delete_folder():
     folder_id = request.json.get('id')
     result = FolderDao.delete(folder_id)
     if not result:
         return jsonify({"message": "error"}), 400
+    return jsonify({"message": "success"})
+
+
+@bp.route("/insert_channels", methods=["POST"])
+def insert_channel():
+    channel_ids = request.form.getlist('channel')
+    folder_id = request.form['folderId']
+    ChannelDao.insert_channels_for_folder(channel_ids, folder_id)
     return jsonify({"message": "success"})
