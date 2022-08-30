@@ -31,13 +31,14 @@ class Dao:
             print(e)
             return False
 
-    def insert(self, sql, obj):
+    def insert(self, sql, obj=None):
         try:
             with get_db().cursor() as cursor:
                 cursor.execute(sql)
                 get_db().commit()
-                obj_name = str(obj).split('_')[0]
-                setattr(obj, "{}_id".format(obj_name), cursor.lastrowid)  # insert된 객체의 id 세팅
+                if obj is not None:
+                    obj_name = str(obj).split('_')[0]
+                    setattr(obj, "{}_id".format(obj_name), cursor.lastrowid)  # insert된 객체의 id 세팅
                 return True
         except pymysql.err.IntegrityError:
             return False
@@ -102,6 +103,10 @@ class ChannelDao:
         sql = "insert ignore into Folder_Channel (`channel_id`, `folder_id`) VALUES (%s, %s)"
         channel_ids = [[channel_id, folder_id] for channel_id in channel_ids]
         dao.insert_all(sql, channel_ids)
+    
+    def insert_channel_for_folder(channel_id, folder_id):
+        sql = "insert into Folder_Channel (`channel_id`, `folder_id`) VALUES (\"{}\", \"{}\")".format(channel_id, folder_id)
+        dao.insert(sql)
 
 
     def find_channels_from_user(user: User) -> List[Channel]:  # 사용자의 채널을 return 하는데, 각 채널의 folder_ids까지 묶어서 한 번에 return
@@ -120,10 +125,10 @@ class ChannelDao:
         results = dao.query_all(sql)
         return [channel['channel_id'] for channel in results]
 
-    def delete_channels_from_folder(channel_ids, folder_id):
-        channel_ids = [[channel_id, folder_id] for channel_id in channel_ids]
-        sql = "delete from Folder_Channel where channel_id = %s and folder_id = %s"
-        dao.update_all(sql, channel_ids)
+    def delete_channel_from_folder(channel_id, folder_id):
+        sql = "delete from Folder_Channel where channel_id = \"{}\" and folder_id = \"{}\"".format(channel_id, folder_id)
+        dao.update(sql)
+
 
     def delete_channels_for_user(user_id):
         sql = "delete from User_Channel where user_id = \"{}\"".format(user_id)

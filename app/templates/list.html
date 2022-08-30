@@ -124,19 +124,27 @@
       );
   });
 
-  const folderChannelForm = document.getElementById("folderChannel--form");
-  folderChannelForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    const payload = new FormData(folderChannelForm);
-    payload.append("folderId", folderChannelForm.dataset.folderId)
-    fetch("/insert_channels", {
-      method: 'POST',
-      body: payload
-    })
-      .then(res => {
-        console.log(res)
-      })
-  })
+  const folderChannelForm2 = document.getElementById("folderChannel--form");
+  const channelCheckboxes = document.querySelectorAll(".modal__channel--checkbox")
+  channelCheckboxes.forEach(function (channel, idx) {
+    channel.addEventListener("click", function (event) {
+      const folderId = folderChannelForm2.dataset.folderId;
+      let request_body = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+        body: JSON.stringify({"channel_id": channel.name})
+      }
+      if (channel.checked === false) {
+        request_body.method = "DELETE"
+      }
+      fetch(`/folder/${folderId}/`, request_body)
+    }
+  )}
+  )
+
 
   // 폴더 생성 시 input에 autofocus
   const folderModal = document.getElementById("createFolder");
