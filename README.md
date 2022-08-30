@@ -33,7 +33,7 @@ ORM을 직접 가져다 쓰는 게 아닌 최소한의 wrapper인 pymysql을 활
 UserDaO, FolderDao 등이 dao를 싱글턴으로 가져와 활용하게 리팩토링 했다. 
 
 
-## 겪었던 문제 해결
+## 문제 해결 과정
 
 ### session이 유지 되지 않던 문제
 
@@ -53,3 +53,48 @@ flask의 redirect가 문제인 건 파악했지만, 이 기능을 직접 바꾸�
 js의 `window.location.reload()`로 화면 새로고침을 대신함
 
 역시 문제 해결의 과정은 하나만 있지 않다.
+
+
+
+## 개선할 점
+
+### test 진행 시의 DB 환경
+
+pytest로 유닛 테스트를 할 때도 같은 DB를 쓰는데, 그러다 보니  
+실제 기능을 테스트할 때와 유닛 테스트 할 때 DB가 겹치는 문제가 발생  
+
+초기엔 유닛 테스트 완료 후 DB를 drop 했는데, 그러다보니 기능 테스트를 할 때 매번 회원가입을 해야 하는  
+번거로운 문제 발생
+
+더 나은 방법이 없을까?
+
+
+### 프론트와 서버 사이드 렌더링의 명확한 분리
+
+프론트와 백을 프레임워크 별로 나눈 게 아니라 하나의 flask app으로 프로젝트를 구성.  
+그러다 보니 어떤 역할을 js에서 하고 어떤 역할을 flask에서 할지가 겹칠 때가 있다.
+
+예를 들어 각 폴더에 채널을 추가하는 모달에서, 채널들의 목록은 서버 사이드에서 미리 렌더링해서 보내준다.
+
+```html
+{% for channel in channels %}
+  <label class="modal__channel d-flex align-items-center pt-2 pb-2">
+    <input data-folder_ids="{{ channel.folder_ids }}" class="modal__channel--checkbox" type="checkbox" name="{{ channel.channel_id }}" value="true">
+    <div class=""><img class="modal__channel--avatar" src="{{ channel.icon_img }}" alt=""></div>
+    <span class="modal__channel--name">{{ channel.name }}</span>
+  </label>
+{% endfor %}
+```
+
+이러면 js가 받을 때부터 이미 html 태그로 만들어져서 온다.   
+하지만 서버 사이드 렌더링 만으로 원하는 기능을 구현하지 못하면 js를 써야 하는데,  
+이 때 이게 기능마다 명확하지 않아서 내가 혼자 개발할 때도 혼란을 야기할 때가 있다.
+
+
+### Dao parameter, return 값의 통일
+
+언제는 id를 인자로, 언제는 model을 인자로 받음  
+언제는 model을 return, 언제는 id를 return함
+
+이걸 하나로 통일할 필요가 있지 않을까? 지금은 너무 세부사항에 의존하는 경향이 있다.  
+

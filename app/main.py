@@ -89,9 +89,23 @@ def delete_folder():
     return jsonify({"message": "success"})
 
 
+@bp.route("/folder/<folder_id>/channels")
+def channels_from_folder(folder_id):
+    channel_ids = ChannelDao.find_channel_ids_from_folder(folder_id)
+    return jsonify({"channel_ids": channel_ids})
+
+
+
 @bp.route("/insert_channels", methods=["POST"])
 def insert_channel():
-    channel_ids = request.form.getlist('channel')
-    folder_id = request.form['folderId']
-    ChannelDao.insert_channels_for_folder(channel_ids, folder_id)
+    form = dict(**request.form)
+    folder_id = form.pop('folderId')
+    channel_id_for_insert, channel_id_for_delete = [], []
+    for channel_id, if_insert in form.items():
+        if if_insert == 'true':
+            channel_id_for_insert.append(channel_id)
+        else:
+            channel_id_for_delete.append(channel_id)
+    ChannelDao.insert_channels_for_folder(channel_id_for_insert, folder_id)
+    ChannelDao.delete_channels_from_folder(channel_id_for_delete, folder_id)
     return jsonify({"message": "success"})
