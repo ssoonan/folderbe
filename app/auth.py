@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, request, session, url_for, Response
 from dotenv import load_dotenv
 
 from .db.dao import ChannelDao, UserDao
-from .model import User
+from .db.model import User
 from .oauth_api import get_whole_channels
 import requests
 import os
@@ -103,7 +103,7 @@ def refresh_token():
     session['expired_at'] = time.time() + response['expires_in']  # 토큰 만료시간 기입
 
     user_info = parse_id_token(response['id_token'])
-    user = id_token_to_user(user_info, session.get('refresh_token', ''))
+    user = UserDao.find_by(user_info['email'], key='email')
     
     channels = get_whole_channels()
     ChannelDao.insert_whole_channels(channels, user)

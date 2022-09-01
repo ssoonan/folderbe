@@ -1,6 +1,9 @@
 from flask import jsonify, session, url_for, redirect, Response, abort
-from .model import Channel, Video
+from .db.model import Channel, Video
 import requests
+import httpx
+import asyncio
+import time
 
 
 SUBSCRIPTION_API_URL = "https://www.googleapis.com/youtube/v3/subscriptions"
@@ -45,12 +48,34 @@ def truncate_views(view_counts):
     return view_counts
 
 
+async def async_http(http_method_name, url, json):
+    async with httpx.AsyncClient() as client:
+        headers = {"Authorization": "Bearer " + session.get('access_token', '')}
+        http_method = getattr(client, http_method_name)
+        response = await http_method(url, headers=headers, json=json)
+        if response.status_code != 200:
+            return abort(401)
+        return response.json()
+
+
 def request_api(http_method, api_url, params):
     headers = {"Authorization": "Bearer " + session.get('access_token', '')}
     response = http_method(api_url, params=params, headers=headers)
     if response.status_code != 200:
         return abort(401)
     return response.json()
+
+
+async def request_test():
+    a = time.time()
+    urls = ["https://example.com/"] * 10
+    results = []
+    for url in urls:
+        print("start")
+        results.append(async_request_api('get', url))
+    await asyncio.gather(*results)
+    print(results)
+    print(time.time() - a)
 
 
 def get_whole_channels():
