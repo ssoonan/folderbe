@@ -107,7 +107,7 @@
       return
     };
     const payload = new FormData(folderForm);
-    fetch("/folder_list", {
+    fetch("/folders", {
       method: "POST",
       body: payload
     })
@@ -161,7 +161,7 @@
       if (tagName === "button" || parentTagName === "button") {
         const folderChannelForm = document.getElementById("folderChannel--form");
         folderChannelForm.dataset.folderId = folderId;
-        fetch(`/folder/${folderId}/channels`, {
+        fetch(`/folder/${folderId}/`, {
           method: 'GET'
         })
           .then(res => res.json())
@@ -184,7 +184,7 @@
           alert("좋아요 표시 영상 폴더는 삭제할 수 없습니다")
           return
         }
-        fetch("/folder_list", {
+        fetch("/folders", {
           method: "DELETE",
           headers: {
             'Accept': 'application/json',

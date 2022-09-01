@@ -65,13 +65,13 @@ def folder_videos(folder_id):
     # return render_template("index.html", videos=videos)
 
 
-@bp.route("/folder_list")
-def list():
+@bp.route("/folders")
+def folders():
     channels = ChannelDao.find_channels_from_user(g.user)
     return render_template("list.html", channels=channels)
 
 
-@bp.route("/folder_list", methods=['POST'])
+@bp.route("/folders", methods=['POST'])
 def create_folder():
     folder_name = request.form['folder_name']
     result = FolderDao.insert(Folder(folder_name, session['user_id']))
@@ -80,7 +80,7 @@ def create_folder():
     return jsonify({"message": "success"})
 
 
-@bp.route("/folder_list", methods=["DELETE"])
+@bp.route("/folders", methods=["DELETE"])
 def delete_folder():
     folder_id = request.json.get('id')
     result = FolderDao.delete(folder_id)
@@ -89,7 +89,7 @@ def delete_folder():
     return jsonify({"message": "success"})
 
 
-@bp.route("/folder/<folder_id>/channels")
+@bp.route("/folder/<folder_id>/")
 def channels_from_folder(folder_id):
     channel_ids = ChannelDao.find_channel_ids_from_folder(folder_id)
     return jsonify({"channel_ids": channel_ids})
