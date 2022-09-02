@@ -125,8 +125,12 @@ class ChannelDao:
         results = dao.query_all(sql)
         channels = []
         for result in results:
-            channels.append(Channel(result['id'], result['icon_img'], result['name']))
+            channels.append(Channel(result['id'], result['icon_img'], result['name'], result['playlist_id']))
         return channels
+
+    def update_channel(channel: Channel):
+        sql = "update Channel set `playlist_id` = \"{}\" where id = \"{}\"".format(channel.playlist_id, channel.channel_id)
+        return dao.update(sql)
 
     def delete_channel_from_folder(channel_id, folder_id):
         sql = "delete from Folder_Channel where channel_id = \"{}\" and folder_id = \"{}\"".format(channel_id, folder_id)

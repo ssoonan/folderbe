@@ -97,20 +97,20 @@ def get_whole_channels():
     return channel_instances
 
 
-def get_playlist_from_channel(channel: Channel):
+def get_playlist_from_channel(channel: Channel) -> str:
     params = {"part": "contentDetails", "id": channel.channel_id}
     response = request_api(requests.get, CHANNEL_API_URL, params)
     playlist_id = response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
     channel.playlist_id = playlist_id
 
 
-def get_videos_from_channel(playlist_id, channel_counts):
+def get_videos_from_channel(channel: Channel, channel_counts):
     max_results = 18 // channel_counts + 1
-    params = {"part": "snippet", "playlistId": playlist_id, "maxResults": max_results}
+    params = {"part": "snippet", "playlistId": channel.playlist_id, "maxResults": max_results}
     response = request_api(requests.get, PLAYLIST_API_URL, params)  # 0.4초..
     videos = []
     for item in response['items']:
-        video = Video(item['snippet']['resourceId']['videoId'], item['snippet']['thumbnails']['high']['url'], item['snippet']['title'], 0, item['snippet']['publishedAt'], 0, item['snippet']['description'], None)
+        video = Video(item['snippet']['resourceId']['videoId'], item['snippet']['thumbnails']['high']['url'], item['snippet']['title'], 0, item['snippet']['publishedAt'], 0, item['snippet']['description'], channel)
         videos.append(video)
     return videos
 
