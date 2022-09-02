@@ -119,11 +119,14 @@ class ChannelDao:
             channels.append(Channel(result['id'], result['icon_img'], result['name']))
         return channels
     
-    def find_channel_ids_from_folder(folder_id) -> List[str]:
+    def find_channels_from_folder(folder_id) -> List[Channel]:
         sql = """select * from Channel c inner join Folder_Channel f_c\
                  on f_c.channel_id = c.id where f_c.folder_id = \"{}\"""".format(folder_id)
         results = dao.query_all(sql)
-        return [channel['channel_id'] for channel in results]
+        channels = []
+        for result in results:
+            channels.append(Channel(result['id'], result['icon_img'], result['name']))
+        return channels
 
     def delete_channel_from_folder(channel_id, folder_id):
         sql = "delete from Folder_Channel where channel_id = \"{}\" and folder_id = \"{}\"".format(channel_id, folder_id)
@@ -145,6 +148,11 @@ class FolderDao:
         for result in results:  # TODO: 이 세팅도 한 번에 넘길 수 있게
             folders.append(Folder(result['name'], result['user_id'], result['id']))
         return folders
+    
+    def find_by_id(folder_id):
+        sql = "select * from Folder where `id` = \"{}\"".format(folder_id)  # TODO: folder_id만으로 구분이 되니 user로 거를 필요는 없겠지? 그럼에도 id가 그대로 날아가니까, 다른 user가 못 하게 하는 기능은 필요함
+        result = dao.query_one(sql)
+        return Folder(result['name'], result['user_id'], result['id'])
     
     def insert(folder: Folder):
         sql = "insert into Folder (name, user_id) VALUES (\"{}\", \"{}\")".format(folder.name, folder.user_id)

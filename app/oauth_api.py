@@ -72,7 +72,7 @@ async def request_test():
     results = []
     for url in urls:
         print("start")
-        results.append(async_request_api('get', url))
+        results.append(async_http('get', url))
     await asyncio.gather(*results)
     print(results)
     print(time.time() - a)
@@ -101,17 +101,24 @@ def get_playlist_from_channel(channel: Channel):
     params = {"part": "contentDetails", "id": channel.channel_id}
     response = request_api(requests.get, CHANNEL_API_URL, params)
     playlist_id = response['items'][0]['contentDetails']['relatedPlaylists']['uploads']
-    channel.set_playlist_id(playlist_id)
+    channel.playlist_id = playlist_id
 
 
-def get_videos_from_channel(channel: Channel, max_results=18):
-    params = {"part": "snippet", "playlistId": channel.playlist_id, "maxResults": max_results}
-    response = request_api(requests.get, PLAYLIST_API_URL, params)
+def get_videos_from_channel(playlist_id, channel_counts):
+    max_results = 18 // channel_counts + 1
+    params = {"part": "snippet", "playlistId": playlist_id, "maxResults": max_results}
+    response = request_api(requests.get, PLAYLIST_API_URL, params)  # 0.4초..
     videos = []
     for item in response['items']:
-        video = Video(item['snippet']['resourceId']['videoId'], item['snippet']['thumbnails']['high']['url'], item['snippet']['title'], 0, item['snippet']['publishedAt'], 0, item['snippet']['description'], channel)
+        video = Video(item['snippet']['resourceId']['videoId'], item['snippet']['thumbnails']['high']['url'], item['snippet']['title'], 0, item['snippet']['publishedAt'], 0, item['snippet']['description'], None)
         videos.append(video)
     return videos
+
+
+def get_statistics_from_video(video_ids):
+    video_ids = ','.join(video_ids)
+    params = {"part": "statistics", "id": video_ids}
+    response = request_api(requests.get, VIDEO_API_URL, params)  # 0.27초.. 이건 video id를 일단 받아야 하기 때문에 동기적으로 할 수 밖에 없긴 한데.. 일단 미루자
 
 
 def get_liked_videos(max_results=18):

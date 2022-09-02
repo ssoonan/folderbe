@@ -7,7 +7,7 @@ from flask import Blueprint, redirect, render_template, url_for, session, g, \
 
 
 from .db.model import Channel, Folder, LikeFolder, Video, make_example_videos
-from .oauth_api import  get_liked_videos, get_playlist_from_channel, get_videos_from_channel, get_whole_channels, request_api
+from .oauth_api import  get_liked_videos, get_playlist_from_channel, get_statistics_from_video, get_videos_from_channel, get_whole_channels, request_api
 from .db.dao import ChannelDao, FolderDao, UserDao
 
 
@@ -43,26 +43,20 @@ def index():
     return render_template("index.html", videos=videos)
 
 
-@bp.route("/index/<folder_id>")
-@bp.route("/<folder_id>")
+@bp.route("/folders/<folder_id>")
 def folder_videos(folder_id):
     if folder_id == '-1':
         videos = get_liked_videos()
         return render_template("index.html", videos=videos)
-    # channels = []
-    # for folder in g.folders:
-    #     channels.extend(folder.channels)
-    # for channel in channels:
-    # channels = get_whole_channels()
-    # whole_videos = []
-    # for channel in channels[2:5]:
-    #     get_playlist_from_channel(channel)
-    #     videos = get_videos_from_channel(channel)
-    #     whole_videos.extend(videos)
-    # whole_videos.sort(key=lambda video: video.published_date, reverse=True)  #TODO: 이 코드가 굳이 여기에 있어야 할까?
-
-    # videos = whole_videos[:15]
-    # return render_template("index.html", videos=videos)
+    folder = FolderDao.find_by_id(folder_id)
+    channels = ChannelDao.find_channels_from_folder(folder.folder_id)
+    whole_videos = []
+    for channel in channels:
+        get_playlist_from_channel(channel)
+        videos = get_videos_from_channel(channel.playlist_id, len(channels))
+        whole_videos.extend(videos)
+    whole_videos.sort(key=lambda video: video.published_date, reverse=True)
+    return render_template("index.html", videos=whole_videos)
 
 
 @bp.route("/folders")
@@ -91,7 +85,8 @@ def delete_folder():
 
 @bp.route("/folder/<folder_id>/")
 def channels_from_folder(folder_id):
-    channel_ids = ChannelDao.find_channel_ids_from_folder(folder_id)
+    channels = ChannelDao.find_channels_from_folder(folder_id)
+    channel_ids = [channel.channel_id for channel in channels]
     return jsonify({"channel_ids": channel_ids})
 
 
@@ -107,3 +102,12 @@ def delete_channel_from_folder(folder_id):
     channel_id = request.json.get('channel_id')
     ChannelDao.delete_channel_from_folder(channel_id, folder_id)
     return jsonify({"message": "success"})
+
+
+@bp.route("/test")
+def test_api():
+    # video_ids = ["ETnROJe4OfA", "RD-ljQYXx_Q"]
+    # get_statistics_from_video(video_ids)
+
+    get_videos_from_channel("UUQ2DWm5Md16Dc3xRwwhVE7Q")
+    return jsonify("success")
