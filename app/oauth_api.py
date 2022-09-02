@@ -1,4 +1,5 @@
 from flask import jsonify, session, url_for, redirect, Response, abort
+from typing import List
 from .db.model import Channel, Video
 import requests
 import httpx
@@ -48,11 +49,11 @@ def truncate_views(view_counts):
     return view_counts
 
 
-async def async_http(http_method_name, url, json):
+async def async_http(http_method_name, url, json={}):
     async with httpx.AsyncClient() as client:
         headers = {"Authorization": "Bearer " + session.get('access_token', '')}
         http_method = getattr(client, http_method_name)
-        response = await http_method(url, headers=headers, json=json)
+        response = await http_method(url, headers=headers, params=json)
         if response.status_code != 200:
             return abort(401)
         return response.json()
@@ -68,7 +69,7 @@ def request_api(http_method, api_url, params):
 
 async def request_test():
     a = time.time()
-    urls = ["https://example.com/"] * 10
+    urls = ["http://ip.jsontest.com/"] * 10
     results = []
     for url in urls:
         print("start")
@@ -113,6 +114,30 @@ def get_videos_from_channel(channel: Channel, channel_counts):
         video = Video(item['snippet']['resourceId']['videoId'], item['snippet']['thumbnails']['high']['url'], item['snippet']['title'], 0, item['snippet']['publishedAt'], 0, item['snippet']['description'], channel)
         videos.append(video)
     return videos
+
+
+async def async_get_videos_from_channel(channel: Channel, channel_counts):
+    max_results = 18 // channel_counts + 1
+    params = {"part": "snippet", "playlistId": channel.playlist_id, "maxResults": max_results}
+    return await async_http('get', PLAYLIST_API_URL, params)
+
+
+async def get_videos_from_channels(channels: List[Channel]):
+    responses = []
+    for channel in channels:
+        response = async_get_videos_from_channel(channel, len(channels))
+        responses.append(response)
+    results = await asyncio.gather(*responses)
+    whole_videos = []
+    for result, channel in zip(results, channels):
+        videos = []
+        for item in result['items']:
+            video = Video(item['snippet']['resourceId']['videoId'], item['snippet']['thumbnails']['high']['url'], item['snippet']['title'], 0, item['snippet']['publishedAt'], 0, item['snippet']['description'], channel)
+            videos.append(video)
+        whole_videos.extend(videos)
+    whole_videos.sort(key=lambda video: video.published_date, reverse=True)
+    return whole_videos
+
 
 
 def get_statistics_from_video(video_ids):

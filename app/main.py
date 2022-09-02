@@ -7,9 +7,9 @@ from flask import Blueprint, redirect, render_template, url_for, session, g, \
 
 
 from .db.model import Channel, Folder, LikeFolder, Video, make_example_videos
-from .oauth_api import  get_liked_videos, get_playlist_from_channel, get_statistics_from_video, get_videos_from_channel, get_whole_channels, request_api
+from .oauth_api import  get_liked_videos, get_playlist_from_channel, get_statistics_from_video, get_videos_from_channel, get_whole_channels, request_api, request_test
 from .db.dao import ChannelDao, FolderDao, UserDao
-from .service import get_videos_from_channels
+from .service import check_playlist_id_and_get_videos_from_channels
 
 
 bp = Blueprint('main', __name__, )
@@ -51,7 +51,7 @@ def folder_videos(folder_id):
         return render_template("index.html", videos=videos)
     folder = FolderDao.find_by_id(folder_id)
     channels = ChannelDao.find_channels_from_folder(folder.folder_id)
-    videos = get_videos_from_channels(channels)
+    videos = asyncio.run(check_playlist_id_and_get_videos_from_channels(channels))
     return render_template("index.html", videos=videos)
 
 
@@ -99,11 +99,3 @@ def delete_channel_from_folder(folder_id):
     ChannelDao.delete_channel_from_folder(channel_id, folder_id)
     return jsonify({"message": "success"})
 
-
-@bp.route("/test")
-def test_api():
-    # video_ids = ["ETnROJe4OfA", "RD-ljQYXx_Q"]
-    # get_statistics_from_video(video_ids)
-
-    get_videos_from_channel("UUQ2DWm5Md16Dc3xRwwhVE7Q")
-    return jsonify("success")
