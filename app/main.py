@@ -57,6 +57,8 @@ def folder_videos(folder_id):
 
 @bp.route("/folders")
 def folders():
+    channels = get_whole_channels()
+    ChannelDao.insert_whole_channels(channels, g.user)
     channels = ChannelDao.find_channels_from_user(g.user)
     return render_template("list.html", channels=channels)
 
