@@ -2,6 +2,7 @@ from flask_bootstrap import Bootstrap5
 from flask import Flask
 
 from .config import Config
+from .oauth_api import pretty_date
 
 
 def create_app(config_class=Config):
@@ -21,5 +22,7 @@ def create_app(config_class=Config):
     
     from . import db
     db.helper.init_app(app)
+
+    app.jinja_env.globals.update(pretty_date=pretty_date)
 
     return app

@@ -1,5 +1,7 @@
 from flask import jsonify, session, url_for, redirect, Response, abort
 from typing import List
+from datetime import datetime, timezone
+from dateutil.parser import parse
 from .db.model import Channel, Video
 import requests
 import httpx
@@ -15,7 +17,7 @@ VIDEO_API_URL = "https://www.googleapis.com/youtube/v3/videos"
 MAX_RESULTS = 50
 
 
-def truncate_views(view_counts):
+def pretty_views(view_counts):
     view_counts = int(view_counts)
     if 1000 <= view_counts < 10000:  # 천
         view_counts *= 1e-3
@@ -47,6 +49,39 @@ def truncate_views(view_counts):
         view_counts = str(int(view_counts)) + '억'
     
     return view_counts
+
+
+def pretty_date(time=False):
+    now = datetime.now(timezone.utc)
+    if type(time) is int:
+        diff = now - datetime.fromtimestamp(time)
+    elif isinstance(time, datetime):
+        diff = now - time
+    elif isinstance(time, str):
+        diff = now - parse(time)
+    second_diff = diff.seconds
+    day_diff = diff.days
+
+    if day_diff < 0:
+        return ''
+
+    if day_diff == 0:
+        if second_diff < 10:
+            return "just now"
+        if second_diff < 60:
+            return str(second_diff) + "초 전"
+        if second_diff < 3600:
+            return str(second_diff // 60) + "분 전"
+        if second_diff < 86400:
+            return str(second_diff // 3600) + "시간 전"
+    if day_diff < 14:
+        return str(day_diff) + "일 전"
+    if day_diff < 31:
+        return str(day_diff // 7) + "주 전"
+    if day_diff < 365:
+        return str(day_diff // 30) + "개월 전"
+    return str(day_diff // 365) + "년 전"
+
 
 
 async def async_http(http_method_name, url, json={}):
@@ -151,7 +186,7 @@ def get_liked_videos(max_results=18):
     response = request_api(requests.get, VIDEO_API_URL, params)
     videos = []
     for item in response['items']:
-        video = Video(item['id'], item['snippet']['thumbnails']['high']['url'], item['snippet']['title'], truncate_views(item['statistics']['viewCount']), item['snippet']['publishedAt'].split('T')[0], 
+        video = Video(item['id'], item['snippet']['thumbnails']['high']['url'], item['snippet']['title'], pretty_views(item['statistics']['viewCount']), item['snippet']['publishedAt'], 
                       item['statistics']['likeCount'], item['snippet']['description'], 
                       Channel(item['snippet']['channelId'], None, item['snippet']['channelTitle'], None))
         videos.append(video)

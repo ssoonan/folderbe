@@ -14,8 +14,8 @@
         <span class="thumbnail__channel--name">{{ video.channel.name }}</span>
       </div>
       <span class="thumbnail__detail">
-        <span class="thumbnail__views">조회수 {{ video.view_counts }}회</span>
-        <span class="thumbnail__date">{{ video.published_date }}</span>
+        <!-- <span class="thumbnail__views">조회수 {{ video.view_counts }}회</span> -->
+        <span class="thumbnail__date">{{ pretty_date(video.published_date) }}</span>
     </a>
   </div>
   {% endfor %}
