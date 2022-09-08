@@ -14,7 +14,7 @@ CREATE TABLE if not exists `Folder` (
   `id` int primary key auto_increment,
   `name` varchar(20) not null,
   `user_id` int not null,
-  FOREIGN KEY (`user_id`) REFERENCES `User`(`id`)
+  FOREIGN KEY (`user_id`) REFERENCES `User`(`id`) ON DELETE CASCADE
   );
 
 CREATE TABLE if not exists `Channel` (
@@ -28,7 +28,7 @@ CREATE TABLE if not exists `Folder_Channel` (
 `channel_id` varchar(200) not null,
 `folder_id` int not null,
 FOREIGN KEY (`channel_id`) REFERENCES `Channel`(`id`),
-FOREIGN KEY (`folder_id`) REFERENCES `Folder`(`id`),
+FOREIGN KEY (`folder_id`) REFERENCES `Folder`(`id`) ON DELETE CASCADE,
 primary key (`channel_id`, `folder_id`)
 );
 
