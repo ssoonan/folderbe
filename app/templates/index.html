@@ -4,7 +4,7 @@
 <main class="content">
   {% for video in videos %}
   <div class="thumbnail">
-    <a href="#" class="thumbnail__link">
+    <a href="#" class="thumbnail__link " data-bs-toggle="modal" data-bs-target="#videoModal" data-theVideo="https://www.youtube.com/embed/{{ video.video_id }}">
       <img class="thumbnail__img" src={{ video.thumbnail_img }} alt="섬네일">
       <span class="thumbnail__title">{{ video.title }}</span>
       <div class="thumbnail__channel">
@@ -19,6 +19,37 @@
     </a>
   </div>
   {% endfor %}
+
+  <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body" style="height: 50rem; padding: 0">
+          <div>
+            <iframe style="width: 100%; height: 50rem" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
+
+{% endblock %}
+{% block scripts %}
+<script type="text/javascript">
+  const thumbnails = document.querySelectorAll(".thumbnail__link");
+  thumbnails.forEach(function(thumbnail, idx) {
+    thumbnail.addEventListener("click", event => {
+      const videoUrl = event.delegateTarget.dataset.thevideo
+      const iframeNode = document.querySelector("#videoModal iframe");
+      iframeNode.src = videoUrl;
+    })
+  })
+
+  const videoModal = document.querySelector("#videoModal");
+  videoModal.addEventListener("hide.bs.modal", () => document.querySelector("#videoModal iframe").src = "")
+
+    
+</script>
 
 {% endblock %}
