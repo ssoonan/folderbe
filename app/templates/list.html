@@ -12,18 +12,18 @@
       </svg>
       <span class="folder__name">{{ folder.name }}</span>
       <div class="folder__hover--icon">
+        {% if folder.folder_id == -1 %}
+        <button class="folder__plus-channel btn btn-light"><span>채널 추가</span></button>
+        {% else %}
         <button class="folder__plus-channel btn btn-light" data-bs-toggle="modal"
           data-bs-target="#exampleModal"><span>채널 추가</span></button>
-        <!-- <div> -->
+        {% endif %}
         <svg class="folder__icon">
           <use class="folder__edit" href="/static/svg/sprite.svg#icon-pencil"></use>
         </svg>
-        <!-- </div>
-        <div> -->
         <svg class="folder__icon">
           <use class="folder__remove" href="/static/svg/sprite.svg#icon-bin2"></use>
         </svg>
-        <!-- </div> -->
       </div>
     </div>
     {% endfor %}
@@ -155,7 +155,12 @@
       const tagName = event.target.tagName.toLowerCase();
       const parentTagName = event.target.parentElement.tagName.toLowerCase();
       // 채널 추가 클릭 시의 행동
+
       if (tagName === "button" || parentTagName === "button") {
+        if (folderId === "-1") {
+          alert("좋아요 표시 영상 폴더엔 채널을 추가할 수 없습니다")
+          return
+        }
         const folderChannelForm = document.getElementById("folderChannel--form");
         folderChannelForm.dataset.folderId = folderId;
         fetch(`/folder/${folderId}/`, {

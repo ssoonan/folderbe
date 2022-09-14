@@ -5,7 +5,6 @@ from dateutil.parser import parse
 from .db.model import Channel, Video
 import requests
 import httpx
-import asyncio
 import time
 
 
@@ -143,23 +142,6 @@ async def async_get_videos_from_channel(channel: Channel, channel_counts):
     max_results = 18 // channel_counts + 1
     params = {"part": "snippet", "playlistId": channel.playlist_id, "maxResults": max_results}
     return await async_http('get', PLAYLIST_API_URL, params)
-
-
-async def get_videos_from_channels(channels: List[Channel]):
-    responses = []
-    for channel in channels:
-        response = async_get_videos_from_channel(channel, len(channels))
-        responses.append(response)
-    results = await asyncio.gather(*responses)
-    whole_videos = []
-    for result, channel in zip(results, channels):
-        videos = []
-        for item in result['items']:
-            video = Video(item['snippet']['resourceId']['videoId'], item['snippet']['thumbnails']['high']['url'], item['snippet']['title'], 0, item['snippet']['publishedAt'], 0, item['snippet']['description'], channel)
-            videos.append(video)
-        whole_videos.extend(videos)
-    whole_videos.sort(key=lambda video: video.published_date, reverse=True)
-    return whole_videos
 
 
 
