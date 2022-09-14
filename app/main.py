@@ -3,11 +3,11 @@ import asyncio
 import httpx
 
 from flask import Blueprint, redirect, render_template, url_for, session, g, \
-    request, jsonify, Response
+    request, jsonify, Response, abort
 
 
 from .db.model import Channel, Folder, LikeFolder, Video, make_example_videos
-from .oauth_api import  get_liked_videos, get_playlist_from_channel, get_statistics_from_video, get_videos_from_channel, get_whole_channels, request_api, request_test
+from .oauth_api import  get_liked_videos
 from .db.dao import ChannelDao, FolderDao, UserDao
 from .service import check_playlist_id_and_get_videos_from_channels
 
@@ -23,7 +23,9 @@ def check_access_token():
     if time.time() > session['expired_at']:  # 현재 시간이 더 크면 만료된 것
         return redirect(url_for('auth.refresh_token'))
     
-    user = UserDao.find_by(session['user_id'], key="id")
+    user = UserDao.find_by(session.get('refresh_token'), key="refresh_token")  # user 확인 여부를 refresh_token으로 확인. user의 id 같은 경우는 정수이기에 노출될 수 있음
+    if user is None:
+        abort(403)  # 이 경우는 인가가 안 된 것이 아닌 forbid
     folders = FolderDao.find_by_user(user)
     folders.insert(0, LikeFolder())
     g.user = user
@@ -31,7 +33,7 @@ def check_access_token():
 
 
 @bp.after_request
-def after_api_auth(response: Response):
+def after_api_auth(response: Response):  # 진행 도중 인증이 끊길 시 -> 재인증 과정
     if response.status_code == 401:
         return redirect(url_for("auth.authorize"))
     return response
@@ -57,8 +59,8 @@ def folder_videos(folder_id):
 
 @bp.route("/folders")
 def folders():
-    channels = get_whole_channels()
-    ChannelDao.insert_whole_channels(channels, g.user)
+    # channels = get_whole_channels()  # TODO: 이걸 매번 안 날리고도 속도 개선할 방법이 필요
+    # ChannelDao.insert_whole_channels(channels, g.user)
     channels = ChannelDao.find_channels_from_user(g.user)
     return render_template("list.html", channels=channels)
 

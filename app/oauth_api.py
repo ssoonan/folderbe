@@ -90,7 +90,7 @@ async def async_http(http_method_name, url, json={}):
         http_method = getattr(client, http_method_name)
         response = await http_method(url, headers=headers, params=json)
         if response.status_code != 200:
-            return abort(401)
+            return abort(430)  # 이게 언제 200이 아니더라?
         return response.json()
 
 
@@ -100,18 +100,6 @@ def request_api(http_method, api_url, params):
     if response.status_code != 200:
         return abort(401)
     return response.json()
-
-
-async def request_test():
-    a = time.time()
-    urls = ["http://ip.jsontest.com/"] * 10
-    results = []
-    for url in urls:
-        print("start")
-        results.append(async_http('get', url))
-    await asyncio.gather(*results)
-    print(results)
-    print(time.time() - a)
 
 
 def get_whole_channels():
