@@ -37,6 +37,6 @@ CREATE TABLE if not exists `User_Channel` (
   `user_id` int not null,
   `channel_id` varchar(200) not null,
   foreign key (`user_id`) REFERENCES `User`(`id`),
-  foreign key (`channel_id`) REFERENCES `Channel`(`id`),
+  foreign key (`channel_id`) REFERENCES `Channel`(`id`) ON DELETE CASCADE,
   primary key (`user_id`, `channel_id`)
 );

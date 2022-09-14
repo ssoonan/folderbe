@@ -78,11 +78,12 @@ def callback():
     # 회원가입 확인
     user_info = parse_id_token(response['id_token'])
     user = id_token_to_user(user_info)
-    UserDao.insert_or_update(user)
 
     refresh_token = response.get('refresh_token')
     if refresh_token is None:  # 이 경우는 거의 없지만, 있어도 회원가입된 경우
         refresh_token = user.refresh_token
+    user.refresh_token = refresh_token
+    UserDao.insert_or_update(user)
     
     session['refresh_token'] = refresh_token
     

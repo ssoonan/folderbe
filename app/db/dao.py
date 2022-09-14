@@ -87,7 +87,7 @@ class UserDao:
         sql = f"insert into User (`name`, `img`, `email`, `refresh_token`)\
             VALUES (\"{user.name}\", \"{user.user_img}\", \"{user.email}\",\
             \"{user.refresh_token}\") on duplicate key update `img`=\"{user.user_img}\", `refresh_token`=\"{user.refresh_token}\""
-        dao.insert(sql)
+        dao.insert(sql, user)
 
     def delete(user_id):
         sql = "delete from User where id = \"{}\"".format(user_id)

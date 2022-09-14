@@ -9,4 +9,6 @@ RUN pip install gunicorn
 COPY ./ ./
 EXPOSE 8000
 
-CMD ["gunicorn", "-b", "0.0.0.0:8000",  "-w", "5", "folderbe:app"]
+RUN chmod 555 boot.sh
+
+CMD ["./boot.sh"]

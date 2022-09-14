@@ -73,7 +73,7 @@ def folders():
 @bp.route("/folders", methods=['POST'])
 def create_folder():
     folder_name = request.form['folder_name']
-    result = FolderDao.insert(Folder(folder_name, session['user_id']))
+    result = FolderDao.insert(Folder(folder_name, g.user.user_id))
     if not result:
         return jsonify({"message": "중복된 이름"}), 400
     return jsonify({"message": "success"})

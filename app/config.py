@@ -1,7 +1,10 @@
+import os
 
 
 class Config:
-    pass
+    DB_HOST = os.environ.get("DB_HOST", "localhost")
+    DB_USER = os.environ.get("DB_USER", "root")
+    DB_PASSWORD = os.environ.get("DB_PASSWORD", "test")
 
 
 class DaoConfig(Config):  # DAO 로직 테스트만을 위한 config
@@ -9,4 +12,6 @@ class DaoConfig(Config):  # DAO 로직 테스트만을 위한 config
 
 
 class AppConfig(Config):  # flask app을 위한 config
-    pass
+    CLIENT_ID = os.environ.get("CLIENT_ID")
+    CLIENT_SECRET = os.environ.get("CLIENT_SECRET")  # TODO: 흩어져있는 config 환경변수 합치기
+    SESSION_KEY = os.environ.get("SESSION_KEY", "123RT$!es^")

@@ -2,6 +2,7 @@ from flask import g, Flask
 import pymysql
 import pymysql.cursors
 import click
+import os
 
 from app.config import AppConfig, Config, DaoConfig
 
@@ -37,9 +38,9 @@ def parse_sql(filename):
 
 
 def get_connection(config: Config = Config) -> pymysql.connect:
-    return pymysql.connect(host="localhost",
-                           user="root",
-                           password="test",
+    return pymysql.connect(host=os.environ.get("DB_HOST", "localhost"),
+                           user=os.environ.get("DB_USER", "root"),
+                           password=os.environ.get("DB_PASSWORD", "test"),
                            database='folderbe',
                            cursorclass=pymysql.cursors.DictCursor)
 
@@ -48,16 +49,17 @@ def get_db(config: Config = AppConfig) -> pymysql.connect:  # TODO: 테스트, �
     if issubclass(config, AppConfig):
         db = getattr(g, '_database', None)
         if db is None:
-            db = g._database = get_connection()
+            db = g._database = get_connection(config)
     elif issubclass(config, DaoConfig):
-        db = get_connection()
+        db = get_connection(config)
     return db
 
 
-def init_db():
-    db = pymysql.connect(host="localhost",
-                         user="root",
-                         password="test")
+def init_db(config: Config = Config):
+    db = pymysql.connect(host=os.environ.get("DB_HOST", "localhost"),
+                         user=os.environ.get("DB_USER", "root"),
+                         password=os.environ.get("DB_PASSWORD", "test"),
+                         cursorclass=pymysql.cursors.DictCursor)
     stmts = parse_sql('app/db/schema.sql')
     with db.cursor() as cursor:
         for stmt in stmts:
@@ -73,7 +75,6 @@ def close_db(e=None):
 
 @click.command('init-db')
 def init_db_command():
-    get_db().cursor().execute("DROP schema if exists `folderbe`")
     init_db()
     click.echo("database is initialized")
 

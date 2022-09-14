@@ -1,14 +1,14 @@
 from flask_bootstrap import Bootstrap5
 from flask import Flask
 
-from .config import Config
+from .config import Config, AppConfig
 from .oauth_api import pretty_date
 
 
-def create_app(config_class=Config):
+def create_app(config: AppConfig = AppConfig):
     app = Flask(__name__)
-    app.secret_key = "12r#!sd21Q"
-    app.config.from_object(config_class)
+    app.config.from_object(config)
+    app.secret_key = config.SESSION_KEY
 
     bootstrap = Bootstrap5()
 
