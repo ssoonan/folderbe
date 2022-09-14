@@ -84,6 +84,12 @@ class UserDao:
     def update(user: User):  # TODO: 원하는 값만 넣어서 업데이트 할 수는 없나?
         sql = "update User SET `img` = \"{}\", `refresh_token` = \"{}\" where `email` = \"{}\"".format(user.user_img, user.refresh_token, user.email)
         dao.update(sql)
+    
+    def insert_or_update(user: User):
+        sql = f"insert into User (`name`, `img`, `email`, `refresh_token`)\
+            VALUES (\"{user.name}\", \"{user.user_img}\", \"{user.email}\",\
+            \"{user.refresh_token}\") on duplicate key update `img`=\"{user.user_img}\", `refresh_token`=\"{user.refresh_token}\""
+        dao.insert(sql)
 
     def delete(user_id):
         sql = "delete from User where id = \"{}\"".format(user_id)
@@ -109,7 +115,7 @@ class ChannelDao:
         dao.insert(sql)
 
 
-    def find_channels_from_user(user: User) -> List[Channel]:  # 사용자의 채널을 return 하는데, 각 채널의 folder_ids까지 묶어서 한 번에 return
+    def find_channels_from_user(user: User) -> List[Channel]: 
         sql = """select c.id, c.playlist_id, c.name, c.icon_img from Channel c\
                 inner join User_Channel u_c on u_c.channel_id = c.id\
                 inner join User u on u.id = u_c.user_id where u.id = \"{}\"""".format(user.user_id)

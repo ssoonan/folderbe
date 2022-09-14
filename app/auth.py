@@ -37,18 +37,15 @@ def parse_id_token(token: str) -> dict:
     return json.loads(decoded)
 
 
-def id_token_to_user(user_info, refresh_token) -> User:
+def id_token_to_user(user_info) -> User:
     user_name = user_info['name']
     user_img = user_info['picture']
     user_email = user_info['email']
     user = UserDao.find_by(user_email, key='email')
     if user is None:
-        user = User(user_img, user_name, user_email, refresh_token)
-        UserDao.insert(user)
-    else:  # TODO: 업데이트 하는 게 너무 장황한데?
-        user.user_img = user_img
-        user.refresh_token = refresh_token
-        UserDao.update(user)
+        user = User(user_img, user_name, user_email)
+    else:
+        user.user_img = user_img  # 바뀌는 건 이미지 하나
     session['user_name'] = user_name
     session['user_email'] = user_email
     session['user_id'] = user.user_id
@@ -77,11 +74,17 @@ def callback():
     session.permanent = True
     session['expired_at'] = time.time() + response['expires_in']  # 토큰 만료시간 기입
     session['access_token'] = response['access_token']
-    session['refresh_token'] = response['refresh_token']
 
     # 회원가입 확인
     user_info = parse_id_token(response['id_token'])
-    user = id_token_to_user(user_info, response['refresh_token'])
+    user = id_token_to_user(user_info)
+    UserDao.insert_or_update(user)
+
+    refresh_token = response.get('refresh_token')
+    if refresh_token is None:  # 이 경우는 거의 없지만, 있어도 회원가입된 경우
+        refresh_token = user.refresh_token
+    
+    session['refresh_token'] = refresh_token
     
     channels = get_whole_channels()
     ChannelDao.insert_whole_channels(channels, user)

@@ -15,8 +15,19 @@ def test_user_dao(app: Flask):
         UserDao.update(user1)  # update 파트
         assert UserDao.find_by(email, key="email").refresh_token == "after token"
 
+        user1.refresh_token = "after token2"
+        UserDao.insert_or_update(user1)
+        assert UserDao.find_by(email, key="email").refresh_token == "after token2"
+
+        email2 = "asdasd@gmail.com"
+        UserDao.insert_or_update(User('https://lh3.googleusercontent.com/a-/AFdZucpJYYcRKM4NmcwxOTsRh29eRdvpRCheNfKj0o6KRw=s96-c-rg-br100', '옥순환2', email2))
+        user2 = UserDao.find_by(email2, key="email")
+        assert user2.name == "옥순환2"
+
         UserDao.delete(user1.user_id)
+        UserDao.delete(user2.user_id)
         assert UserDao.find_by(email, key="email") is None
+        assert UserDao.find_by(email2, key="email") is None
 
 
 def test_folder_dao(app: Flask):
