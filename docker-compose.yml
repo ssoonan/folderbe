@@ -10,5 +10,18 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: test
     
+    volumes:
+      - ./data:/var/lib/mysql
+    
     ports:
       - 127.0.0.1:3306:3306
+  
+  folderbe:
+    build:
+      context: ./
+    restart: always
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    

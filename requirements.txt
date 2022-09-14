@@ -1,0 +1,7 @@
+flask
+bootstrap-flask
+pymysql
+requests
+httpx
+python-dateutil
+python-dotenv

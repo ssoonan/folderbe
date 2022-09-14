@@ -1,6 +1,4 @@
-from turtle import update
 from typing import List
-from functools import wraps
 import pymysql
 
 
