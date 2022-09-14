@@ -33,11 +33,16 @@ def check_access_token():
 
 
 @bp.after_request
-def after_api_auth(response: Response):  # 진행 도중 인증이 끊길 시 -> 재인증 과정
+def after_api_auth(response: Response):  # 진행 도중 인증이 끊길 시 -> 재인증 과정 TODO: 이 401이 무한으로 걸릴 때도 있었다..
     if response.status_code == 401:
         return redirect(url_for("auth.authorize"))
     return response
-    
+
+
+def check_folder_user(folder_id):  # TODO: 이걸 매번하는 방법이 없나? folder를 매번 쓰는 게 아니니까,,?
+    folder = FolderDao.find_by_id(folder_id)
+    if folder.user_id != g.user.user_id:
+        abort(403)
 
 @bp.route("/index")
 @bp.route("/")
@@ -51,8 +56,8 @@ def folder_videos(folder_id):
     if folder_id == '-1':
         videos = get_liked_videos()
         return render_template("index.html", videos=videos)
-    folder = FolderDao.find_by_id(folder_id)
-    channels = ChannelDao.find_channels_from_folder(folder.folder_id)
+    check_folder_user(folder_id)
+    channels = ChannelDao.find_channels_from_folder(folder_id)
     videos = asyncio.run(check_playlist_id_and_get_videos_from_channels(channels))
     return render_template("index.html", videos=videos)
 
@@ -77,6 +82,7 @@ def create_folder():
 @bp.route("/folders", methods=["DELETE"])
 def delete_folder():
     folder_id = request.json.get('id')
+    check_folder_user(folder_id)
     result = FolderDao.delete(folder_id)
     if not result:
         return jsonify({"message": "error"}), 400
@@ -85,6 +91,7 @@ def delete_folder():
 
 @bp.route("/folder/<folder_id>/")
 def channels_from_folder(folder_id):
+    check_folder_user(folder_id)
     channels = ChannelDao.find_channels_from_folder(folder_id)
     channel_ids = [channel.channel_id for channel in channels]
     return jsonify({"channel_ids": channel_ids})
@@ -92,6 +99,7 @@ def channels_from_folder(folder_id):
 
 @bp.route("/folder/<folder_id>/", methods=['POST'])
 def insert_channel_from_folder(folder_id):
+    check_folder_user(folder_id)
     channel_id = request.json.get('channel_id')
     ChannelDao.insert_channel_for_folder(channel_id, folder_id)
     return jsonify({"message": "success"})
@@ -99,6 +107,7 @@ def insert_channel_from_folder(folder_id):
 
 @bp.route("/folder/<folder_id>/", methods=['DELETE'])
 def delete_channel_from_folder(folder_id):
+    check_folder_user(folder_id)
     channel_id = request.json.get('channel_id')
     ChannelDao.delete_channel_from_folder(channel_id, folder_id)
     return jsonify({"message": "success"})
