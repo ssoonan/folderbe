@@ -1,5 +1,5 @@
 from app import create_app
-from app.config import Config
+from app.config import Config, DaoConfig
 from app.db import init_db, get_db
 
 import pytest
@@ -15,3 +15,8 @@ def app():
     with app.app_context():
         init_db()
     yield app
+
+
+@pytest.fixture
+def app_for_dao():
+    app = create_app(config_class=DaoConfig)

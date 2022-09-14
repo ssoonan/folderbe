@@ -3,6 +3,8 @@ import pymysql
 import pymysql.cursors
 import click
 
+from app.config import AppConfig, Config, DaoConfig
+
 
 def parse_sql(filename):
     data = open(filename, 'r').readlines()
@@ -34,14 +36,21 @@ def parse_sql(filename):
     return stmts
 
 
-def get_db() -> pymysql.connect:
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = pymysql.connect(host="localhost",
-                                           user="root",
-                                           password="test",
-                                           database='folderbe',
-                                           cursorclass=pymysql.cursors.DictCursor)
+def get_connection(config: Config = Config) -> pymysql.connect:
+    return pymysql.connect(host="localhost",
+                           user="root",
+                           password="test",
+                           database='folderbe',
+                           cursorclass=pymysql.cursors.DictCursor)
+
+
+def get_db(config: Config = AppConfig) -> pymysql.connect:  # TODO: 테스트, 앱 환경에 따라 config를 주입 받을 수 있게 변경하기
+    if issubclass(config, AppConfig):
+        db = getattr(g, '_database', None)
+        if db is None:
+            db = g._database = get_connection()
+    elif issubclass(config, DaoConfig):
+        db = get_connection()
     return db
 
 

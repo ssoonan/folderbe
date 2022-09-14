@@ -3,8 +3,7 @@ from app.db.model import Folder, User, Channel
 from flask import Flask
 
 
-def test_user_dao(app: Flask):
-    with app.app_context():
+def test_user_dao(app_for_dao: Flask):
         email = 'asd@gmail.com'
         UserDao.insert(User('https://lh3.googleusercontent.com/a-/AFdZucpJYYcRKM4NmcwxOTsRh29eRdvpRCheNfKj0o6KRw=s96-c-rg-br100', '옥순환', email))
         user1 = UserDao.find_by(email, key='email')
