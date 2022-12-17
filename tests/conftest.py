@@ -11,7 +11,7 @@ class TestConfig(Config):
 
 @pytest.fixture
 def app():
-    app = create_app(config_class=TestConfig)
+    app = create_app(config=TestConfig)
     with app.app_context():
         init_db()
     yield app
@@ -19,4 +19,4 @@ def app():
 
 @pytest.fixture
 def app_for_dao():
-    app = create_app(config_class=DaoConfig)
+    app = create_app(config=DaoConfig)

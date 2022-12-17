@@ -5,6 +5,7 @@ class Config:
     DB_HOST = os.environ.get("DB_HOST", "localhost")
     DB_USER = os.environ.get("DB_USER", "root")
     DB_PASSWORD = os.environ.get("DB_PASSWORD", "test")
+    SESSION_KEY = os.environ.get("SESSION_KEY", "123RT$!es^")
 
 
 class DaoConfig(Config):  # DAO 로직 테스트만을 위한 config

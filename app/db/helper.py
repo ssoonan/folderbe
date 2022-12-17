@@ -37,7 +37,7 @@ def parse_sql(filename):
     return stmts
 
 
-def get_connection(config: Config = Config) -> pymysql.connect:
+def get_connection() -> pymysql.connect:
     return pymysql.connect(host=os.environ.get("DB_HOST", "localhost"),
                            user=os.environ.get("DB_USER", "root"),
                            password=os.environ.get("DB_PASSWORD", "test"),
@@ -49,7 +49,7 @@ def get_db(config: Config = AppConfig) -> pymysql.connect:  # TODO: 테스트, �
     if issubclass(config, AppConfig):
         db = getattr(g, '_database', None)
         if db is None:
-            db = g._database = get_connection(config)
+            db = g._database = get_connection()
     elif issubclass(config, DaoConfig):
         db = get_connection(config)
     return db
