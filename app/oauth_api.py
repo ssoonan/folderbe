@@ -156,8 +156,11 @@ def get_liked_videos(max_results=18):
     response = request_api(requests.get, VIDEO_API_URL, params)
     videos = []
     for item in response['items']:
-        video = Video(item['id'], item['snippet']['thumbnails']['high']['url'], item['snippet']['title'], pretty_views(item['statistics']['viewCount']), item['snippet']['publishedAt'], 
-                      item['statistics']['likeCount'], item['snippet']['description'], 
-                      Channel(item['snippet']['channelId'], None, item['snippet']['channelTitle'], None))
+        try:
+            video = Video(item['id'], item['snippet']['thumbnails']['high']['url'], item['snippet']['title'], pretty_views(item['statistics']['viewCount']), item['snippet']['publishedAt'], 
+                        item['statistics']['likeCount'], item['snippet']['description'], 
+                        Channel(item['snippet']['channelId'], None, item['snippet']['channelTitle'], None))
+        except KeyError:
+            continue # TODO: 로깅
         videos.append(video)
     return videos
