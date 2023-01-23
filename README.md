@@ -7,6 +7,36 @@
 
 이에 저는 이 채널들을 **폴더** 형식으로 모으고, 해당 폴더의 영상들만 보는 서비스가 있으면 좋겠다는 생각을 합니다. 그리고 이를 *밑바닥*부터 직접 개발하며 개발 실력도 익히고자 폴더브 프로젝트를 시작했습니다.
 
+
+## install
+
+### prerequisite
+
+- docker, docker-compose
+- python3
+- youtube API 사용을 위한 OAuth 세팅
+
+```bash
+# 가상환경 설치
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# local DB 세팅
+docker-compose up -d db
+flask init-db  # create SQL로 DB 세팅
+```
+
+### ENV
+```
+.env 내
+CLIENT_ID
+CLIENT_SECRET
+```
+
+세팅이 다 된 이후
+`flask run --debug`로 실행
+
 ## 화면 기획
 
 https://chrome.google.com/webstore/detail/pockettube-youtube-subscr/kdmnjgijlmjgmimahnillepgcgeemffb
