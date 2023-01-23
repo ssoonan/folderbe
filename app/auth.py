@@ -56,7 +56,7 @@ def id_token_to_user(user_info) -> User:
 @bp.route("/authorize")
 def authorize():
     params = {"client_id": CLIENT_ID,
-              "redirect_uri": url_for("auth.callback", _external=True),
+              "redirect_uri": url_for("auth.callback", _external=True, _scheme='https'),
               "response_type": "code",
               "scope": ' '.join(SCOPES),
               "access_type": "offline"}
@@ -68,7 +68,7 @@ def callback():
     params = {"code": request.args.get("code"),
               "client_id": CLIENT_ID,
               "client_secret": CLIENT_SECRET,
-              "redirect_uri": url_for("auth.callback", _external=True),
+              "redirect_uri": url_for("auth.callback", _external=True, _scheme='https'),
               "grant_type": "authorization_code"}
     response = requests.post(TOKEN_URL, params=params).json()
     session.permanent = True

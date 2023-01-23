@@ -89,7 +89,7 @@ async def async_http(http_method_name, url, json={}):
         http_method = getattr(client, http_method_name)
         response = await http_method(url, headers=headers, params=json)
         if response.status_code != 200:
-            return abort(430)  # 이게 언제 200이 아니더라?
+            return abort(430)  # TODO: 다르게 수정. 430은 캐치를 못함
         return response.json()
 
 

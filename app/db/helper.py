@@ -4,7 +4,7 @@ import pymysql.cursors
 import click
 import os
 
-from app.config import AppConfig, Config, DaoConfig
+from app.config import AppConfig, DefaultConfig, DaoConfig
 
 
 def parse_sql(filename):
@@ -38,14 +38,18 @@ def parse_sql(filename):
 
 
 def get_connection() -> pymysql.connect:
-    return pymysql.connect(host=os.environ.get("DB_HOST", "localhost"),
-                           user=os.environ.get("DB_USER", "root"),
-                           password=os.environ.get("DB_PASSWORD", "test"),
-                           database='folderbe',
-                           cursorclass=pymysql.cursors.DictCursor)
+    connection_config = {
+        'host': os.environ.get("DB_HOST", "localhost"),
+        'user': os.environ.get("DB_USER", "root"),
+        'password': os.environ.get("DB_PASSWORD", "test"),
+        'database': 'folderbe',
+        'cursorclass': pymysql.cursors.DictCursor,
+        #'ssl_ca': '/etc/ssl/certs/ca-certificates.crt'
+        }
+    return pymysql.connect(**connection_config)
 
 
-def get_db(config: Config = AppConfig) -> pymysql.connect:  # TODO: 테스트, 앱 환경에 따라 config를 주입 받을 수 있게 변경하기
+def get_db(config: DefaultConfig = AppConfig) -> pymysql.connect:  # TODO: 테스트, 앱 환경에 따라 config를 주입 받을 수 있게 변경하기
     if issubclass(config, AppConfig):
         db = getattr(g, '_database', None)
         if db is None:
@@ -55,7 +59,7 @@ def get_db(config: Config = AppConfig) -> pymysql.connect:  # TODO: 테스트, �
     return db
 
 
-def init_db(config: Config = Config):
+def init_db(config: DefaultConfig = DefaultConfig):
     db = pymysql.connect(host=os.environ.get("DB_HOST", "localhost"),
                          user=os.environ.get("DB_USER", "root"),
                          password=os.environ.get("DB_PASSWORD", "test"),

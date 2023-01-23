@@ -1,11 +1,11 @@
 from app import create_app
-from app.config import Config, DaoConfig
+from app.config import DefaultConfig, DaoConfig
 from app.db import init_db, get_db
 
 import pytest
 
 
-class TestConfig(Config):
+class TestConfig(DefaultConfig):
     TESTING = True
 
 

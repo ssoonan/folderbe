@@ -1,14 +1,16 @@
+import os
 from flask_bootstrap import Bootstrap5
 from flask import Flask
 
-from .config import Config, AppConfig
+from .config import config
 from .oauth_api import pretty_date
 
 
-def create_app(config: AppConfig = AppConfig):
+def create_app(config_name='development'):
     app = Flask(__name__)
-    app.config.from_object(config)
-    app.secret_key = config.SESSION_KEY
+    used_config = config[config_name]
+    app.config.from_object(used_config)
+    app.secret_key = used_config.SESSION_KEY
 
     bootstrap = Bootstrap5()
 
@@ -26,3 +28,6 @@ def create_app(config: AppConfig = AppConfig):
     app.jinja_env.globals.update(pretty_date=pretty_date)
 
     return app
+
+
+app = create_app(os.getenv('FLASK_CONFIG'))
