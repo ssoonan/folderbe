@@ -19,7 +19,7 @@ class AppConfig(DefaultConfig):  # flask app을 위한 config
 
 
 class ProductionConfig(AppConfig):
-    OAUTHLIB_INSECURE_TRANSPORT = 1
+    pass
 
 
 config = {

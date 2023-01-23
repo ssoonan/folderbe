@@ -6,6 +6,16 @@ import os
 
 from app.config import AppConfig, DefaultConfig, DaoConfig
 
+connection_config = {
+        'host': os.environ.get("DB_HOST", "localhost"),
+        'user': os.environ.get("DB_USER", "root"),
+        'password': os.environ.get("DB_PASSWORD", "test"),
+        'database': 'folderbe',
+        'cursorclass': pymysql.cursors.DictCursor,
+        'ssl_ca': '/etc/ssl/certs/ca-certificates.crt'
+        }
+
+
 
 def parse_sql(filename):
     data = open(filename, 'r').readlines()
@@ -38,14 +48,6 @@ def parse_sql(filename):
 
 
 def get_connection() -> pymysql.connect:
-    connection_config = {
-        'host': os.environ.get("DB_HOST", "localhost"),
-        'user': os.environ.get("DB_USER", "root"),
-        'password': os.environ.get("DB_PASSWORD", "test"),
-        'database': 'folderbe',
-        'cursorclass': pymysql.cursors.DictCursor,
-        #'ssl_ca': '/etc/ssl/certs/ca-certificates.crt'
-        }
     return pymysql.connect(**connection_config)
 
 
@@ -60,10 +62,7 @@ def get_db(config: DefaultConfig = AppConfig) -> pymysql.connect:  # TODO: í…ŒìŠ
 
 
 def init_db(config: DefaultConfig = DefaultConfig):
-    db = pymysql.connect(host=os.environ.get("DB_HOST", "localhost"),
-                         user=os.environ.get("DB_USER", "root"),
-                         password=os.environ.get("DB_PASSWORD", "test"),
-                         cursorclass=pymysql.cursors.DictCursor)
+    db = pymysql.connect(**connection_config)
     stmts = parse_sql('app/db/schema.sql')
     with db.cursor() as cursor:
         for stmt in stmts:
