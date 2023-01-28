@@ -21,7 +21,7 @@ def check_access_token():
         return redirect(url_for("auth.authorize"))
     
     if time.time() > session['expired_at']:  # 현재 시간이 더 크면 만료된 것
-        return redirect(url_for('auth.refresh_token'))
+        return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https'))
     
     user = UserDao.find_by(session.get('refresh_token'), key="refresh_token")  # user 확인 여부를 refresh_token으로 확인. user의 id 같은 경우는 정수이기에 노출될 수 있음
     if user is None:
