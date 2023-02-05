@@ -86,6 +86,11 @@ header {
   flex: 0 0 25vh;
 }
 
+.sidebar__each-folder:hover {
+  background-color: var(--color-grey-light-2);
+  display: block;
+}
+
 .nav-link {
   color: #383838;
   line-height: 4rem;

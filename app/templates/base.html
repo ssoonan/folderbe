@@ -32,10 +32,10 @@
                 </div>
                 <ul class="list-unstyled flex-column">
                     {% for folder in g.folders %}
-                    <li class="">
+                    <li class="py-3 sidebar__each-folder">
                         <a href="{{ url_for('main.folder_videos', folder_id=folder.folder_id) }}"
                             class="nav-link text-decoration-none">
-                            <svg class="icon icon-folder-open">
+                            <svg class="icon icon-folder-open ms-4">
                                 <use href="/static/svg/sprite.svg#icon-folder-open"></use>
                             </svg>
                             <span>{{ folder.name }}</span>
