@@ -1,4 +1,6 @@
-from flask import Blueprint, redirect, request, session, url_for, Response
+from flask import Blueprint, g, make_response, redirect, request, session, url_for, Response
+from google.oauth2 import id_token
+from google.auth.transport.requests import Request
 from dotenv import load_dotenv
 
 from .db.dao import ChannelDao, UserDao
@@ -9,6 +11,7 @@ import os
 import time
 import base64
 import json
+import copy
 
 
 load_dotenv()
@@ -37,19 +40,18 @@ def parse_id_token(token: str) -> dict:
     return json.loads(decoded)
 
 
+def save_user_to_session(user):
+    session['user_name'] = user.name
+    session['user_email'] = user.email
+    session['user_id'] = user.id
+    session['user_img'] = user.user_img
+
+
 def id_token_to_user(user_info) -> User:
-    user_name = user_info['name']
-    user_img = user_info['picture']
-    user_email = user_info['email']
-    user = UserDao.find_by(user_email, key='email')
+    user = UserDao.find_by(user_info['email'], key='email')
     if user is None:
-        user = User(user_img, user_name, user_email)
-    else:
-        user.user_img = user_img  # 바뀌는 건 이미지 하나
-    session['user_name'] = user_name
-    session['user_email'] = user_email
-    session['user_id'] = user.user_id
-    session['user_img'] = user_img
+        # 회원가입
+        user = User(user_info)
     return user
 
 
@@ -75,21 +77,29 @@ def callback():
     session['expired_at'] = time.time() + response['expires_in']  # 토큰 만료시간 기입
     session['access_token'] = response['access_token']
 
-    # 회원가입 확인
-    user_info = parse_id_token(response['id_token'])
+    # JWT 검사
+    user_info = id_token.verify_oauth2_token(response['id_token'], Request(), CLIENT_ID)
     user = id_token_to_user(user_info)
+    save_user_to_session(user)
 
     refresh_token = response.get('refresh_token')
     if refresh_token is None:  # 이 경우는 거의 없지만, 있어도 회원가입된 경우
         refresh_token = user.refresh_token
     user.refresh_token = refresh_token
-    UserDao.insert_or_update(user)
+    UserDao.update(user)
     
     session['refresh_token'] = refresh_token
     
     channels = get_whole_channels()
     ChannelDao.insert_whole_channels(channels, user)
-    return redirect(url_for("main.index"))
+    redirect_response = make_response(redirect(url_for("main.index")))
+    redirect_response.set_cookie('jwt', response['id_token'], httponly=True)
+    return redirect_response
+
+@bp.route('/signup', methods=['POST'])
+def signup():
+    request_body = request.json
+
 
 # TODO: 1. refresh 토큰 session이 아닌 DB에서 2. redirect을 원래 main이 아닌 원래 url로 보내기
 @bp.route("/refresh_token")

@@ -21,8 +21,11 @@ class AppConfig(DefaultConfig):  # flask app을 위한 config
 class ProductionConfig(AppConfig):
     pass
 
+class TestConfig(AppConfig):
+    pass
 
 config = {
     'development': AppConfig,
-    'production': ProductionConfig
+    'production': ProductionConfig,
+    'test': TestConfig
 }

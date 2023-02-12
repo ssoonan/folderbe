@@ -1,9 +1,10 @@
+drop schema if exists `folderbe`;
 CREATE schema if not exists `folderbe`;
 use folderbe;
 
 
 CREATE TABLE if not exists `User` (
-  `id` int primary key auto_increment,
+  `id` varchar(30) primary key,
   `name` varchar(20) not null,
   `img` text,
   `email` varchar(30) unique,
@@ -13,7 +14,7 @@ CREATE TABLE if not exists `User` (
 CREATE TABLE if not exists `Folder` (
   `id` int primary key auto_increment,
   `name` varchar(20) not null,
-  `user_id` int not null,
+  `user_id` varchar(30) not null,
   FOREIGN KEY (`user_id`) REFERENCES `User`(`id`) ON DELETE CASCADE
   );
 
@@ -34,7 +35,7 @@ primary key (`channel_id`, `folder_id`)
 
 
 CREATE TABLE if not exists `User_Channel` (
-  `user_id` int not null,
+  `user_id` varchar(30) not null,
   `channel_id` varchar(200) not null,
   foreign key (`user_id`) REFERENCES `User`(`id`),
   foreign key (`channel_id`) REFERENCES `Channel`(`id`) ON DELETE CASCADE,

@@ -73,10 +73,10 @@ class UserDao:
         result = dao.query_one(sql)
         if result is None:
             return None
-        return User(result['img'], result['name'], result['email'], result['refresh_token'], user_id=result['id'])
+        return User(result)
 
     def insert(user: User):
-        sql = """insert into User (`name`, `img`, `email`, `refresh_token`) VALUES ("{}", "{}", "{}", "{}")""".format(user.name, user.user_img, user.email, user.refresh_token)
+        sql = f"insert into User (`id`,  `name`, `img`, `email`, `refresh_token`) VALUES (\"{user.id}\", \"{user.name}\", \"{user.user_img}\", \"{user.email}\", \"{user.refresh_token}\")"
         dao.insert(sql, user)
 
     def update(user: User):  # TODO: 원하는 값만 넣어서 업데이트 할 수는 없나?
@@ -84,8 +84,8 @@ class UserDao:
         dao.update(sql)
     
     def insert_or_update(user: User):
-        sql = f"insert into User (`name`, `img`, `email`, `refresh_token`)\
-            VALUES (\"{user.name}\", \"{user.user_img}\", \"{user.email}\",\
+        sql = f"insert into User (`id`, `name`, `img`, `email`, `refresh_token`)\
+            VALUES (\"{user.id}\", \"{user.name}\", \"{user.user_img}\", \"{user.email}\",\
             \"{user.refresh_token}\") on duplicate key update `img`=\"{user.user_img}\", `refresh_token`=\"{user.refresh_token}\""
         dao.insert(sql, user)
 
@@ -101,7 +101,7 @@ class ChannelDao:
         channel_sql = "insert ignore into Channel (`id`, `icon_img`, `name`) Values (%s, %s, %s)"
         dao.insert_all(channel_sql, channels)
         channel_user_sql = "insert ignore into User_Channel (`user_id`, `channel_id`) VALUES (%s, %s)"
-        dao.insert_all(channel_user_sql, [[user.user_id, channel[0]] for channel in channels])
+        dao.insert_all(channel_user_sql, [[user.id, channel[0]] for channel in channels])
 
     def insert_channels_for_folder(channel_ids: List[str], folder_id):
         sql = "insert ignore into Folder_Channel (`channel_id`, `folder_id`) VALUES (%s, %s)"
@@ -150,7 +150,7 @@ class FolderDao:
     dao = dao
 
     def find_by_user(user: User) -> List[Folder]:
-        sql = "select * from Folder where `user_id` = \"{}\"".format(user.user_id)
+        sql = "select * from Folder where `user_id` = \"{}\"".format(user.id)
         results = dao.query_all(sql)
         folders = []
         for result in results:  # TODO: 이 세팅도 한 번에 넘길 수 있게

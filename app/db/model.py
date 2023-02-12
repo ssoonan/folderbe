@@ -1,12 +1,19 @@
 
 class User:
-    def __init__(self, user_img, name, email, refresh_token=None, user_id=None, channels=None):
-        self.user_img = user_img
-        self.name = name
-        self.email = email
-        self.refresh_token = refresh_token
-        self.user_id = user_id
-        self.channels = channels
+    # def __init__(self, user_img, name, email, refresh_token=None, user_id=None, channels=None):
+    #     self.user_img = user_img
+    #     self.name = name
+    #     self.email = email
+    #     self.refresh_token = refresh_token
+    #     self.user_id = user_id
+    #     self.channels = channels
+
+    def __init__(self, user_info):
+        self.user_img = user_info.get('img') or user_info.get('picture')
+        self.name = user_info['name']
+        self.email = user_info['email']
+        self.refresh_token = user_info.get('refresh_token')
+        self.id = user_info.get('id') or user_info.get('sub')
     
     def __repr__(self) -> str:
         return "user_{}".format(self.name)
