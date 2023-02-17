@@ -19,11 +19,10 @@ bp = Blueprint('main', __name__, )
 def check_access_token():
     user_id = request.cookies.get('user_id')
     access_token = session.get('access_token')
-    # 둘 다 없는 쿠키 초기화 -> 인증
     if access_token is None:
         if user_id is None:
-            return redirect(url_for("auth.authorize"))
-        return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https'))
+            return redirect(url_for("auth.authorize")) # 둘 다 없는 쿠키 초기화 -> 인증
+        return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https')) # user_id는 살아있을 시 -> refresh_token 발급
     if time.time() > session['expired_at']:  # 현재 시간이 더 크면 만료된 것
         if user_id is None:
             return redirect(url_for("auth.authorize"))  # cookie도 없으면 재인증
@@ -31,10 +30,10 @@ def check_access_token():
     user = UserDao.find_by(user_id) 
     if user is None: # 이 경우는 인가가 안 된 것이 아닌 forbid
         abort(403)
-    folders = FolderDao.find_by_user(user)
+    folders = FolderDao.find_by_user(user_id)
     folders.insert(0, LikeFolder())
-    g.user = user
     g.folders = folders
+    g.user_id = user_id
 
 
 @bp.after_request
@@ -46,7 +45,7 @@ def after_api_auth(response: Response):  # 진행 도중 인증이 끊길 시 ->
 
 def check_folder_user(folder_id):  # TODO: 이걸 매번하는 방법이 없나? folder를 매번 쓰는 게 아니니까,,?
     folder = FolderDao.find_by_id(folder_id)
-    if folder.user_id != g.user.id:
+    if folder.user_id != g.user_id:
         abort(403)
 
 @bp.route("/index")
@@ -70,15 +69,15 @@ def folder_videos(folder_id):
 @bp.route("/folders")
 def folders():
     # channels = get_whole_channels()  # TODO: 이걸 매번 안 날리고도 속도 개선할 방법이 필요
-    # ChannelDao.insert_whole_channels(channels, g.user)
-    channels = ChannelDao.find_channels_from_user(g.user)
+    ChannelDao.insert_whole_channels(channels, g.user_id)
+    channels = ChannelDao.find_channels_from_user(g.user_id)
     return render_template("list.html", channels=channels)
 
 
 @bp.route("/folders", methods=['POST'])
 def create_folder():
     folder_name = request.form['folder_name']
-    result = FolderDao.insert(Folder(folder_name, g.user.id))
+    result = FolderDao.insert(Folder(folder_name, g.user_id))
     if not result:
         return jsonify({"message": "중복된 이름"}), 400
     return jsonify({"message": "success"})

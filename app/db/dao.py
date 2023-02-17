@@ -96,12 +96,12 @@ class UserDao:
 class ChannelDao:
     dao = dao
 
-    def insert_whole_channels(channels: List[Channel], user: User):
+    def insert_whole_channels(channels: List[Channel], user_id):
         channels = [[channel.channel_id, channel.icon_img, channel.name] for channel in channels]
         channel_sql = "insert ignore into Channel (`id`, `icon_img`, `name`) Values (%s, %s, %s)"
         dao.insert_all(channel_sql, channels)
         channel_user_sql = "insert ignore into User_Channel (`user_id`, `channel_id`) VALUES (%s, %s)"
-        dao.insert_all(channel_user_sql, [[user.id, channel[0]] for channel in channels])
+        dao.insert_all(channel_user_sql, [[user_id, channel[0]] for channel in channels])
 
     def insert_channels_for_folder(channel_ids: List[str], folder_id):
         sql = "insert ignore into Folder_Channel (`channel_id`, `folder_id`) VALUES (%s, %s)"
@@ -113,10 +113,10 @@ class ChannelDao:
         dao.insert(sql)
 
 
-    def find_channels_from_user(user: User) -> List[Channel]: 
+    def find_channels_from_user(user_id) -> List[Channel]: 
         sql = """select c.id, c.playlist_id, c.name, c.icon_img from Channel c\
                 inner join User_Channel u_c on u_c.channel_id = c.id\
-                inner join User u on u.id = u_c.user_id where u.id = \"{}\"""".format(user.id)
+                inner join User u on u.id = u_c.user_id where u.id = \"{}\"""".format(user_id)
         results = dao.query_all(sql)
         channels = []
         for result in results:
@@ -149,8 +149,8 @@ class ChannelDao:
 class FolderDao:
     dao = dao
 
-    def find_by_user(user: User) -> List[Folder]:
-        sql = "select * from Folder where `user_id` = \"{}\"".format(user.id)
+    def find_by_user(user_id) -> List[Folder]:
+        sql = "select * from Folder where `user_id` = \"{}\"".format(user_id)
         results = dao.query_all(sql)
         folders = []
         for result in results:  # TODO: 이 세팅도 한 번에 넘길 수 있게
