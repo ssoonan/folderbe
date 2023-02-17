@@ -17,15 +17,20 @@ bp = Blueprint('main', __name__, )
 
 @bp.before_request
 def check_access_token():
-    if session.get('access_token') is None:  # access_token 자체가 없을 때
-        return redirect(url_for("auth.authorize"))
-    
-    if time.time() > session['expired_at']:  # 현재 시간이 더 크면 만료된 것
+    user_id = request.cookies.get('user_id')
+    access_token = session.get('access_token')
+    # 둘 다 없는 쿠키 초기화 -> 인증
+    if access_token is None:
+        if user_id is None:
+            return redirect(url_for("auth.authorize"))
         return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https'))
-    
-    user = UserDao.find_by(session.get('refresh_token'), key="refresh_token")  # user 확인 여부를 refresh_token으로 확인. user의 id 같은 경우는 정수이기에 노출될 수 있음
-    if user is None:
-        abort(403)  # 이 경우는 인가가 안 된 것이 아닌 forbid
+    if time.time() > session['expired_at']:  # 현재 시간이 더 크면 만료된 것
+        if user_id is None:
+            return redirect(url_for("auth.authorize"))  # cookie도 없으면 재인증
+        return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https'))  # cookie가 있으면 refresh_token
+    user = UserDao.find_by(user_id) 
+    if user is None: # 이 경우는 인가가 안 된 것이 아닌 forbid
+        abort(403)
     folders = FolderDao.find_by_user(user)
     folders.insert(0, LikeFolder())
     g.user = user
