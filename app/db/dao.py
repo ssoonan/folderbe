@@ -116,7 +116,7 @@ class ChannelDao:
     def find_channels_from_user(user: User) -> List[Channel]: 
         sql = """select c.id, c.playlist_id, c.name, c.icon_img from Channel c\
                 inner join User_Channel u_c on u_c.channel_id = c.id\
-                inner join User u on u.id = u_c.user_id where u.id = \"{}\"""".format(user.user_id)
+                inner join User u on u.id = u_c.user_id where u.id = \"{}\"""".format(user.id)
         results = dao.query_all(sql)
         channels = []
         for result in results:

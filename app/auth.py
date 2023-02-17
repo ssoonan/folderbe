@@ -93,12 +93,8 @@ def callback():
     channels = get_whole_channels()
     ChannelDao.insert_whole_channels(channels, user)
     redirect_response = make_response(redirect(url_for("main.index")))
-    redirect_response.set_cookie('jwt', response['id_token'], httponly=True)
+    redirect_response.set_cookie('user_id', user.id, httponly=True)
     return redirect_response
-
-@bp.route('/signup', methods=['POST'])
-def signup():
-    request_body = request.json
 
 
 # TODO: 1. refresh 토큰 session이 아닌 DB에서 2. redirect을 원래 main이 아닌 원래 url로 보내기

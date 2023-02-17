@@ -41,7 +41,7 @@ def after_api_auth(response: Response):  # 진행 도중 인증이 끊길 시 ->
 
 def check_folder_user(folder_id):  # TODO: 이걸 매번하는 방법이 없나? folder를 매번 쓰는 게 아니니까,,?
     folder = FolderDao.find_by_id(folder_id)
-    if folder.user_id != g.user.user_id:
+    if folder.user_id != g.user.id:
         abort(403)
 
 @bp.route("/index")
@@ -73,7 +73,7 @@ def folders():
 @bp.route("/folders", methods=['POST'])
 def create_folder():
     folder_name = request.form['folder_name']
-    result = FolderDao.insert(Folder(folder_name, g.user.user_id))
+    result = FolderDao.insert(Folder(folder_name, g.user.id))
     if not result:
         return jsonify({"message": "중복된 이름"}), 400
     return jsonify({"message": "success"})
