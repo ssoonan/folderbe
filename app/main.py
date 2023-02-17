@@ -17,16 +17,17 @@ bp = Blueprint('main', __name__, )
 
 @bp.before_request
 def check_access_token():
-    user_id = request.cookies.get('user_id')
+    jwt = request.cookies.get('jwt')
     access_token = session.get('access_token')
     if access_token is None:
-        if user_id is None:
+        if jwt is None:
             return redirect(url_for("auth.authorize")) # 둘 다 없는 쿠키 초기화 -> 인증
         return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https')) # user_id는 살아있을 시 -> refresh_token 발급
     if time.time() > session['expired_at']:  # 현재 시간이 더 크면 만료된 것
-        if user_id is None:
+        if jwt is None:
             return redirect(url_for("auth.authorize"))  # cookie도 없으면 재인증
         return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https'))  # cookie가 있으면 refresh_token
+    user_id = session['user_id']
     user = UserDao.find_by(user_id) 
     if user is None: # 이 경우는 인가가 안 된 것이 아닌 forbid
         abort(403)
@@ -69,8 +70,8 @@ def folder_videos(folder_id):
 @bp.route("/folders")
 def folders():
     # channels = get_whole_channels()  # TODO: 이걸 매번 안 날리고도 속도 개선할 방법이 필요
-    ChannelDao.insert_whole_channels(channels, g.user_id)
     channels = ChannelDao.find_channels_from_user(g.user_id)
+    ChannelDao.insert_whole_channels(channels, g.user_id)
     return render_template("list.html", channels=channels)
 
 
