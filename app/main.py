@@ -7,7 +7,7 @@ from flask import Blueprint, redirect, render_template, url_for, session, g, \
 
 
 from .db.model import Channel, Folder, LikeFolder, Video, make_example_videos
-from .oauth_api import  get_liked_videos
+from .oauth_api import  get_liked_videos, get_whole_channels
 from .db.dao import ChannelDao, FolderDao, UserDao
 from .service import check_playlist_id_and_get_videos_from_channels
 

@@ -29,17 +29,6 @@ SCOPES = ["https://www.googleapis.com/auth/youtube",
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-def parse_id_token(token: str) -> dict:
-    parts = token.split(".")
-    if len(parts) != 3:
-        raise Exception("Incorrect id token format")
-
-    payload = parts[1]
-    padded = payload + '=' * (4 - len(payload) % 4)
-    decoded = base64.b64decode(padded)
-    return json.loads(decoded)
-
-
 def save_user_to_session(user):
     session['user_name'] = user.name
     session['user_email'] = user.email
@@ -52,6 +41,7 @@ def id_token_to_user(user_info) -> User:
     if user is None:
         # 회원가입
         user = User(user_info)
+        UserDao.insert(user)
     return user
 
 
@@ -79,6 +69,7 @@ def callback():
 
     # JWT 검사
     jwt = response['id_token']
+    time.sleep(2)
     user_info = id_token.verify_oauth2_token(jwt, Request(), CLIENT_ID)
     user = id_token_to_user(user_info)
     save_user_to_session(user)

@@ -1,13 +1,5 @@
 
 class User:
-    # def __init__(self, user_img, name, email, refresh_token=None, user_id=None, channels=None):
-    #     self.user_img = user_img
-    #     self.name = name
-    #     self.email = email
-    #     self.refresh_token = refresh_token
-    #     self.user_id = user_id
-    #     self.channels = channels
-
     def __init__(self, user_info):
         self.user_img = user_info.get('img') or user_info.get('picture')
         self.name = user_info['name']
@@ -46,7 +38,7 @@ class Folder:
 
 
 class LikeFolder(Folder):
-    def __init__(self, name="좋아요 표시한 동영상", folder_id=-1):
+    def __init__(self, name="좋아요 동영상", folder_id=-1):
         super().__init__(name, folder_id=folder_id)
 
     
