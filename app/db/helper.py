@@ -8,7 +8,7 @@ from app.config import AppConfig, DefaultConfig, DaoConfig
 
 connection_config = {
         'host': os.environ.get("DB_HOST", "localhost"),
-        'user': os.environ.get("DB_USER", "root"),
+        'user': os.environ.get("DB_USERNAME", "root"),
         'password': os.environ.get("DB_PASSWORD", "test"),
         'database': 'folderbe',
         'cursorclass': pymysql.cursors.DictCursor,

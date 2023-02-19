@@ -5,3 +5,4 @@ requests
 httpx
 python-dateutil
 python-dotenv
+google-auth
