@@ -70,8 +70,8 @@ def folder_videos(folder_id):
 @bp.route("/folders")
 def folders():
     # channels = get_whole_channels()  # TODO: 이걸 매번 안 날리고도 속도 개선할 방법이 필요
+    # ChannelDao.insert_whole_channels(channels, g.user_id)
     channels = ChannelDao.find_channels_from_user(g.user_id)
-    ChannelDao.insert_whole_channels(channels, g.user_id)
     return render_template("list.html", channels=channels)
 
 

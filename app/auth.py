@@ -67,7 +67,6 @@ def callback():
 
     # JWT 검사
     jwt = response['id_token']
-    time.sleep(2)
     user_info = id_token.verify_oauth2_token(jwt, Request(), CLIENT_ID)
     user = id_token_to_user(user_info)
     save_user_to_session(user)
@@ -79,7 +78,7 @@ def callback():
     UserDao.update(user)
     
     channels = get_whole_channels()
-    ChannelDao.insert_whole_channels(channels, user)
+    ChannelDao.insert_whole_channels(channels, user.id)
     redirect_response = make_response(redirect(url_for("main.index")))
     redirect_response.set_cookie('jwt', jwt, httponly=True)
     return redirect_response
@@ -105,7 +104,7 @@ def refresh_token():
     session['expired_at'] = time.time() + response['expires_in']  # 토큰 만료시간 기입
     
     channels = get_whole_channels()
-    ChannelDao.insert_whole_channels(channels, user)
+    ChannelDao.insert_whole_channels(channels, user.id)
     redirect_response = make_response(redirect(url_for("main.index")))
     redirect_response.set_cookie('jwt', jwt, httponly=True)
     return redirect_response
