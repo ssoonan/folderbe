@@ -17,16 +17,11 @@ bp = Blueprint('main', __name__, )
 
 @bp.before_request
 def check_access_token():
-    jwt = request.cookies.get('jwt')
     access_token = session.get('access_token')
     if access_token is None:
-        if jwt is None:
-            return redirect(url_for("auth.authorize")) # 둘 다 없는 쿠키 초기화 -> 인증
-        return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https')) # user_id는 살아있을 시 -> refresh_token 발급
+        return redirect(url_for("auth.authorize")) # 둘 다 없는 쿠키 초기화 -> 인증
     if time.time() > session['expired_at']:  # 현재 시간이 더 크면 만료된 것
-        if jwt is None:
-            return redirect(url_for("auth.authorize"))  # cookie도 없으면 재인증
-        return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https'))  # cookie가 있으면 refresh_token
+        return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https'))  # session이 살아있으면 refresh_token
     user_id = session['user_id']
     user = UserDao.find_by(user_id) 
     if user is None: # 이 경우는 인가가 안 된 것이 아닌 forbid

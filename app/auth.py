@@ -79,18 +79,13 @@ def callback():
     
     channels = get_whole_channels()
     ChannelDao.insert_whole_channels(channels, user.id)
-    redirect_response = make_response(redirect(url_for("main.index")))
-    redirect_response.set_cookie('jwt', jwt, httponly=True)
-    return redirect_response
+    return redirect(url_for("main.index"))
 
 
 # TODO: redirect을 원래 main이 아닌 원래 url로 보내기
 @bp.route("/refresh_token")
 def refresh_token():
-    jwt = request.cookies.get('jwt')
-    user_info = id_token.verify_oauth2_token(jwt, Request(), CLIENT_ID)
-    user = id_token_to_user(user_info)
-    save_user_to_session(user)
+    user = UserDao.find_by(session['user_id'])
     params = {"client_id": CLIENT_ID,
               "client_secret": CLIENT_SECRET,
               "refresh_token": user.refresh_token,
@@ -102,9 +97,12 @@ def refresh_token():
     response = response.json()
     session['access_token'] = response['access_token']  # 이 때 id_token도 같이 오긴 하네
     session['expired_at'] = time.time() + response['expires_in']  # 토큰 만료시간 기입
+
+    jwt = response['id_token']
+    user_info = id_token.verify_oauth2_token(jwt, Request(), CLIENT_ID)
+    user = id_token_to_user(user_info)
+    UserDao.update(user)
     
     channels = get_whole_channels()
     ChannelDao.insert_whole_channels(channels, user.id)
-    redirect_response = make_response(redirect(url_for("main.index")))
-    redirect_response.set_cookie('jwt', jwt, httponly=True)
-    return redirect_response
+    return redirect(url_for("main.index"))

@@ -10,7 +10,6 @@ def create_app(config_name='development'):
     app = Flask(__name__)
     used_config = config[config_name]
     app.config.from_object(used_config)
-    app.secret_key = used_config.SESSION_KEY
 
     bootstrap = Bootstrap5()
 
