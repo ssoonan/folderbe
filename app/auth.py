@@ -1,4 +1,4 @@
-from flask import Blueprint, g, make_response, redirect, request, session, url_for, Response
+from flask import Blueprint, abort, g, make_response, redirect, request, session, url_for, Response
 from google.oauth2 import id_token
 from google.auth.transport.requests import Request
 from dotenv import load_dotenv
@@ -42,6 +42,12 @@ def id_token_to_user(user_info) -> User:
         UserDao.insert(user)
     return user
 
+
+@bp.after_request
+def after_api_auth(response: Response):  # 403으로 oauth 동의를 안 할 시
+    if response.status_code == 403:
+        return redirect(url_for("auth.authorize", prompt='consent'))
+    return response
 
 @bp.route("/authorize")
 def authorize():
