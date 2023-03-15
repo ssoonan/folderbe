@@ -33,9 +33,9 @@ def check_access_token():
 
 
 @bp.after_request
-def after_api_auth(response: Response):  # 진행 도중 인증이 끊길 시 -> 재인증 과정 TODO: 이 401이 무한으로 걸릴 때도 있었다..
-    if response.status_code == 401:
-        return redirect(url_for("auth.authorize"))
+def after_api_auth(response: Response):  # 403으로 oauth 동의를 안 할 시
+    if response.status_code == 403:
+        return redirect(url_for("auth.authorize", prompt='consent'))
     return response
 
 

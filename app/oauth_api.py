@@ -88,8 +88,9 @@ async def async_http(http_method_name, url, json={}):
         headers = {"Authorization": "Bearer " + session.get('access_token', '')}
         http_method = getattr(client, http_method_name)
         response = await http_method(url, headers=headers, params=json)
+        # TODO: flask abort이 아닌 개별 처리 필요
         if response.status_code != 200:
-            return abort(430)  # TODO: 다르게 수정. 430은 캐치를 못함
+            return abort(403)
         return response.json()
 
 
@@ -97,7 +98,7 @@ def request_api(http_method, api_url, params):
     headers = {"Authorization": "Bearer " + session.get('access_token', '')}
     response = http_method(api_url, params=params, headers=headers)
     if response.status_code != 200:
-        return abort(401)
+        return abort(403)
     return response.json()
 
 

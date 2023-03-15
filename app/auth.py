@@ -45,11 +45,13 @@ def id_token_to_user(user_info) -> User:
 
 @bp.route("/authorize")
 def authorize():
+    prompt = request.args.get('prompt', 'none')
     params = {"client_id": CLIENT_ID,
               "redirect_uri": url_for("auth.callback", _external=True, _scheme='https'),
               "response_type": "code",
               "scope": ' '.join(SCOPES),
-              "access_type": "offline"}
+              "access_type": "offline",
+              "prompt": prompt}
     return redirect(requests.get(AUTHORIZATION_URL, params=params, allow_redirects=False).url)
 
 
