@@ -20,7 +20,6 @@ def check_access_token():
     access_token = session.get('access_token')
     if access_token is None:
         return
-    #     return redirect(url_for("auth.authorize")) # 둘 다 없는 쿠키 초기화 -> 인증
     if time.time() > session['expired_at']:  # 현재 시간이 더 크면 만료된 것
         return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https'))  # session이 살아있으면 refresh_token
     user_id = session['user_id']
@@ -49,7 +48,10 @@ def check_folder_user(folder_id):  # TODO: 이걸 매번하는 방법이 없나?
 @bp.route("/index")
 @bp.route("/")
 def index():
-    return render_template("index.html")
+    if session.get('user_id') is None:
+        return render_template("index.html")
+    videos = get_liked_videos()
+    return render_template("index.html", videos=videos)
 
 
 @bp.route("/folders/-1")

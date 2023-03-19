@@ -51,6 +51,8 @@ def jwt_to_user(jwt):
 
 
 def postprocess_user(response):
+    if session.get('user_id') is None:
+        user = jwt_to_user(response['id_token'])
     user = UserDao.find_by(session['user_id'])
     refresh_token = response.get('refresh_token')
     if refresh_token is None:  # 이 경우는 거의 없지만, 있어도 회원가입된 경우
@@ -71,16 +73,19 @@ def after_api_auth(response: Response):  # 403으로 oauth 동의를 안 할 시
 
 @bp.route("/authorize", methods=['GET', 'POST'])
 def authorize():
-    jwt = request.form['credential']
-    user = jwt_to_user(jwt)
-    prompt = request.args.get('prompt')
     params = {"client_id": CLIENT_ID,
               "redirect_uri": url_for("auth.callback", _external=True, _scheme='https'),
               "response_type": "code",
               "scope": ' '.join(SCOPES),
               "access_type": "offline",
-              "include_granted_scopes": 'true',
-              "login_hint": user.email}
+              "include_granted_scopes": 'true'}
+    # 로그인 이후 요청 보낼 시
+    if request.method == 'POST':
+        jwt = request.form['credential']
+        user = jwt_to_user(jwt)
+        params.update({'login_hint': user.email})
+    # 도중 토큰 만료, 재로그인 필요할 시
+    prompt = request.args.get('prompt')
     if prompt is not None:
         params.update({'prompt': prompt})
     return redirect(requests.get(AUTHORIZATION_URL, params=params, allow_redirects=False).url)
@@ -98,7 +103,6 @@ def callback():
     session.permanent = True
     session['expired_at'] = time.time() + response['expires_in']  # 토큰 만료시간 기입
     session['access_token'] = response['access_token']
-
     postprocess_user(response)
     return redirect(url_for("main.like_videos"))
 
