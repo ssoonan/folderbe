@@ -47,8 +47,28 @@
                     &copy folderbe
                 </div>
             </nav>
-            {% block content %}{% endblock %}
-        </div>
+            {% if session.get('access_token') is none %}
+            <main class="content">
+                <div id="g_id_onload"
+                    data-client_id="244920735056-q17g2cqouhmf5maqe3g2ugkkp6qfr82n.apps.googleusercontent.com"
+                    data-context="signin"
+                    data-ux_mode="redirect"
+                    data-login_uri="https://localhost:5050/auth/authorize"
+                    data-auto_prompt="false">
+                </div>
+
+                <div class="g_id_signin"
+                    data-type="standard"
+                    data-shape="rectangular"
+                    data-theme="outline"
+                    data-text="signin_with"
+                    data-size="large"
+                    data-logo_alignment="left">
+                </div>
+                {% endif %}
+                {% block content %}{% endblock %}
+            </div>
+        </main>
     </div>
 
     {{ bootstrap.load_js() }}

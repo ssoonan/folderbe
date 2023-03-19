@@ -20,9 +20,7 @@ TOKEN_URL = "https://oauth2.googleapis.com/token"
 CLIENT_ID = os.environ.get("CLIENT_ID")
 CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 SCOPES = ["https://www.googleapis.com/auth/youtube",
-          "https://www.googleapis.com/auth/youtube.readonly",
-          "https://www.googleapis.com/auth/userinfo.profile",
-          "https://www.googleapis.com/auth/userinfo.email"]
+          "https://www.googleapis.com/auth/youtube.readonly"]
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -34,7 +32,7 @@ def save_user_to_session(user):
     session['user_img'] = user.user_img
 
 
-def id_token_to_user(user_info) -> User:
+def id_token_to_user(user_info: dict) -> User:
     user = UserDao.find_by(user_info['email'], key='email')
     if user is None:
         # 회원가입
@@ -43,42 +41,17 @@ def id_token_to_user(user_info) -> User:
     return user
 
 
-@bp.after_request
-def after_api_auth(response: Response):  # 403으로 oauth 동의를 안 할 시
-    if response.status_code == 403:
-        return redirect(url_for("auth.authorize", prompt='consent'))
-    return response
-
-@bp.route("/authorize")
-def authorize():
-    prompt = request.args.get('prompt')
-    params = {"client_id": CLIENT_ID,
-              "redirect_uri": url_for("auth.callback", _external=True, _scheme='https'),
-              "response_type": "code",
-              "scope": ' '.join(SCOPES),
-              "access_type": "offline"}
-    if prompt is not None: params.update({'prompt': prompt})
-    return redirect(requests.get(AUTHORIZATION_URL, params=params, allow_redirects=False).url)
-
-
-@bp.route("/callback")
-def callback():
-    params = {"code": request.args.get("code"),
-              "client_id": CLIENT_ID,
-              "client_secret": CLIENT_SECRET,
-              "redirect_uri": url_for("auth.callback", _external=True, _scheme='https'),
-              "grant_type": "authorization_code"}
-    response = requests.post(TOKEN_URL, params=params).json()
-    session.permanent = True
-    session['expired_at'] = time.time() + response['expires_in']  # 토큰 만료시간 기입
-    session['access_token'] = response['access_token']
-
-    # JWT 검사
-    jwt = response['id_token']
+def jwt_to_user(jwt):
     user_info = id_token.verify_oauth2_token(jwt, Request(), CLIENT_ID)
     user = id_token_to_user(user_info)
     save_user_to_session(user)
 
+    UserDao.update(user)
+    return user
+
+
+def postprocess_user(response):
+    user = UserDao.find_by(session['user_id'])
     refresh_token = response.get('refresh_token')
     if refresh_token is None:  # 이 경우는 거의 없지만, 있어도 회원가입된 경우
         refresh_token = user.refresh_token
@@ -87,7 +60,47 @@ def callback():
     
     channels = get_whole_channels()
     ChannelDao.insert_whole_channels(channels, user.id)
-    return redirect(url_for("main.index"))
+
+
+@bp.after_request
+def after_api_auth(response: Response):  # 403으로 oauth 동의를 안 할 시
+    if response.status_code == 403:
+        return redirect(url_for("auth.authorize", prompt='consent'))
+    return response
+
+
+@bp.route("/authorize", methods=['GET', 'POST'])
+def authorize():
+    jwt = request.form['credential']
+    user = jwt_to_user(jwt)
+    prompt = request.args.get('prompt')
+    params = {"client_id": CLIENT_ID,
+              "redirect_uri": url_for("auth.callback", _external=True, _scheme='https'),
+              "response_type": "code",
+              "scope": ' '.join(SCOPES),
+              "access_type": "offline",
+              "include_granted_scopes": 'true',
+              "login_hint": user.email}
+    if prompt is not None:
+        params.update({'prompt': prompt})
+    return redirect(requests.get(AUTHORIZATION_URL, params=params, allow_redirects=False).url)
+
+
+@bp.route("/callback", methods=['GET', 'POST'])
+def callback():
+    params = {"code": request.args.get("code"),
+              "client_id": CLIENT_ID,
+              "client_secret": CLIENT_SECRET,
+              "redirect_uri": url_for("auth.callback", _external=True, _scheme='https'),
+              "grant_type": "authorization_code",
+              "include_granted_scopes": 'true'}
+    response = requests.post(TOKEN_URL, params=params).json()
+    session.permanent = True
+    session['expired_at'] = time.time() + response['expires_in']  # 토큰 만료시간 기입
+    session['access_token'] = response['access_token']
+
+    postprocess_user(response)
+    return redirect(url_for("main.like_videos"))
 
 
 # TODO: redirect을 원래 main이 아닌 원래 url로 보내기
@@ -106,11 +119,5 @@ def refresh_token():
     session['access_token'] = response['access_token']  # 이 때 id_token도 같이 오긴 하네
     session['expired_at'] = time.time() + response['expires_in']  # 토큰 만료시간 기입
 
-    jwt = response['id_token']
-    user_info = id_token.verify_oauth2_token(jwt, Request(), CLIENT_ID)
-    user = id_token_to_user(user_info)
-    UserDao.update(user)
-    
-    channels = get_whole_channels()
-    ChannelDao.insert_whole_channels(channels, user.id)
-    return redirect(url_for("main.index"))
+    postprocess_user(response)
+    return redirect(url_for("main.like_videos"))

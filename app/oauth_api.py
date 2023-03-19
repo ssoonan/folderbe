@@ -82,7 +82,6 @@ def pretty_date(time=False):
     return str(day_diff // 365) + "년 전"
 
 
-
 async def async_http(http_method_name, url, json={}):
     async with httpx.AsyncClient() as client:
         headers = {"Authorization": "Bearer " + session.get('access_token', '')}

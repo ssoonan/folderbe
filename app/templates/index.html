@@ -2,23 +2,25 @@
 
 {% block content %}
 <main class="content">
-  {% for video in videos %}
-  <div class="thumbnail">
-    <a href="#" class="thumbnail__link " data-bs-toggle="modal" data-bs-target="#videoModal" data-theVideo="https://www.youtube.com/embed/{{ video.video_id }}">
-      <img class="thumbnail__img" src={{ video.thumbnail_img }} alt="섬네일">
-      <span class="thumbnail__title">{{ video.title }}</span>
-      <div class="thumbnail__channel">
-        <!-- <img class="thumbnail__channel--img"
-          src="{{ video.channel.icon_img }}"
-          alt="채널 이미지"> -->
-        <span class="thumbnail__channel--name">{{ video.channel.name }}</span>
-      </div>
-      <span class="thumbnail__detail">
-        <!-- <span class="thumbnail__views">조회수 {{ video.view_counts }}회</span> -->
-        <span class="thumbnail__date">{{ pretty_date(video.published_date) }}</span>
-    </a>
-  </div>
-  {% endfor %}
+  {% if session.get('access_token') is not none %}
+    {% for video in videos %}
+    <div class="thumbnail">
+      <a href="#" class="thumbnail__link " data-bs-toggle="modal" data-bs-target="#videoModal" data-theVideo="https://www.youtube.com/embed/{{ video.video_id }}">
+        <img class="thumbnail__img" src={{ video.thumbnail_img }} alt="섬네일">
+        <span class="thumbnail__title">{{ video.title }}</span>
+        <div class="thumbnail__channel">
+          <!-- <img class="thumbnail__channel--img"
+            src="{{ video.channel.icon_img }}"
+            alt="채널 이미지"> -->
+          <span class="thumbnail__channel--name">{{ video.channel.name }}</span>
+        </div>
+        <span class="thumbnail__detail">
+          <!-- <span class="thumbnail__views">조회수 {{ video.view_counts }}회</span> -->
+          <span class="thumbnail__date">{{ pretty_date(video.published_date) }}</span>
+      </a>
+    </div>
+    {% endfor %}
+  {% endif %}
 
   <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModal" aria-hidden="true" data-bs-keyboard="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
