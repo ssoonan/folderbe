@@ -51,13 +51,13 @@ def after_api_auth(response: Response):  # 403으로 oauth 동의를 안 할 시
 
 @bp.route("/authorize")
 def authorize():
-    prompt = request.args.get('prompt', 'none')
+    prompt = request.args.get('prompt')
     params = {"client_id": CLIENT_ID,
               "redirect_uri": url_for("auth.callback", _external=True, _scheme='https'),
               "response_type": "code",
               "scope": ' '.join(SCOPES),
-              "access_type": "offline",
-              "prompt": prompt}
+              "access_type": "offline"}
+    if prompt is not None: params.update({'prompt': prompt})
     return redirect(requests.get(AUTHORIZATION_URL, params=params, allow_redirects=False).url)
 
 
