@@ -1,7 +1,7 @@
 import asyncio
 from typing import List
 
-from .oauth_api import get_playlist_from_channel, async_get_videos_from_channel
+from .oauth_api import get_playlist_from_channel, async_get_videos_from_channel, pretty_date
 from .db.dao import ChannelDao
 from .db.model import Channel, Video
 
@@ -20,6 +20,7 @@ async def async_get_videos_from_channels(channels: List[Channel], page=1):
             videos.append(video)
         whole_videos.extend(videos)
     whole_videos.sort(key=lambda video: video.published_date, reverse=True)
+    whole_videos = map(lambda video: (setattr(video, "published_date", pretty_date(video.published_date)), video)[1], whole_videos)
     return whole_videos
 
 

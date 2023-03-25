@@ -77,7 +77,7 @@ def folder_videos_api(folder_id):
     channels = ChannelDao.find_channels_from_folder(folder_id)
     page = request.args.get('page', 1)
     videos = asyncio.run(check_playlist_id_and_get_videos_from_channels(channels, page))
-    return jsonify({"videos": list(map(lambda video: {"video": video.to_dict()}, videos))})
+    return jsonify({"videos": list(map(lambda video: video.to_dict(), videos))})
 
 
 @bp.route("/folders")
