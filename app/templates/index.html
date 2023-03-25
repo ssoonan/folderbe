@@ -35,7 +35,6 @@
   </div>
 
 </main>
-
 {% endblock %}
 {% block scripts %}
 <script type="text/javascript">
@@ -56,7 +55,7 @@ function createThumbnailHtml(video) {
     return html;
 }
   let page = 1;
-
+  
   function loadMoreContent() {
     const folderId = window.location.pathname.split('/').at(-1)
     page++;
@@ -69,12 +68,17 @@ function createThumbnailHtml(video) {
         const videoHtml = videos.map(video => createThumbnailHtml(video))
         container.insertAdjacentHTML('beforeend', videoHtml)
       })
-      )
-    }
-
+    )
+  }
+  let currentScrollPosition = 0;
+  let isLoading = false;
   window.addEventListener('scroll', () => {
   const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  // Check if the user has scrolled to the trigger point
   if (scrollTop + clientHeight >= scrollHeight - 5) {
+    // Store the current scroll position before loading more content
+    currentScrollPosition = scrollTop;
+    isLoading = true;
     loadMoreContent();
   }
 });

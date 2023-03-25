@@ -2,6 +2,7 @@ from flask import jsonify, session, url_for, redirect, Response, abort
 from typing import List
 from datetime import datetime, timezone
 from dateutil.parser import parse
+
 from .db.model import Channel, Video
 import requests
 import httpx
@@ -14,6 +15,11 @@ PLAYLIST_API_URL = "https://www.googleapis.com/youtube/v3/playlistItems"
 VIDEO_API_URL = "https://www.googleapis.com/youtube/v3/videos"
 
 MAX_RESULTS = 50
+
+def sort_videos(videos: List[Video]):
+    videos.sort(key=lambda video: video.published_date, reverse=True)
+    videos = map(lambda video: (setattr(video, "published_date", pretty_date(video.published_date)), video)[1], videos)
+    return videos
 
 
 def pretty_views(view_counts):
@@ -174,4 +180,4 @@ def get_liked_videos(max_results=18):
         except KeyError:
             continue # TODO: 로깅
         videos.append(video)
-    return videos
+    return sort_videos(videos)
