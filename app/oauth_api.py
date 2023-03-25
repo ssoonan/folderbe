@@ -112,11 +112,10 @@ def get_whole_channels():
         response = request_api(requests.get, SUBSCRIPTION_API_URL, params)
         channels.extend(response["items"])
 
-
     for channel in channels:
         channel_instance = Channel(channel['snippet']['resourceId']['channelId'], channel['snippet']['thumbnails']['high']['url'], channel['snippet']['title'])
         channel_instances.append(channel_instance)
-    
+
     return channel_instances
 
 
@@ -127,7 +126,7 @@ def get_playlist_from_channel(channel: Channel) -> str:
     channel.playlist_id = playlist_id
 
 
-def get_videos_from_channel(channel: Channel, channel_counts):
+def get_videos_from_channel(channel: Channel, channel_counts, page=1): # 동기적 함수, 안 쓰는 중
     max_results = 18 // channel_counts + 1
     params = {"part": "snippet", "playlistId": channel.playlist_id, "maxResults": max_results}
     response = request_api(requests.get, PLAYLIST_API_URL, params)  # 0.4초..
@@ -138,11 +137,23 @@ def get_videos_from_channel(channel: Channel, channel_counts):
     return videos
 
 
-async def async_get_videos_from_channel(channel: Channel, channel_counts):
+async def async_get_videos_from_channel(channel: Channel, channel_counts, page=1):
     max_results = 18 // channel_counts + 1
-    params = {"part": "snippet", "playlistId": channel.playlist_id, "maxResults": max_results}
-    return await async_http('get', PLAYLIST_API_URL, params)
+    params = {"part": "snippet", "playlistId": channel.playlist_id, "maxResults": max_results, "pageToken": None}
+    if page != 1:
+        params['pageToken'] = get_page_token(channel)
+    result = await async_http('get', PLAYLIST_API_URL, params)
+    set_page_token(result, channel)
+    return result
 
+
+def set_page_token(result, channel: Channel):
+    next_page_token = result.get('nextPageToken')
+    session[f"{channel.channel_id}_next_page_token"] = next_page_token
+    
+
+def get_page_token(channel: Channel):
+    return session.get(f"{channel.channel_id}_next_page_token")
 
 
 def get_statistics_from_video(video_ids):

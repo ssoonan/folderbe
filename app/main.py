@@ -71,6 +71,15 @@ def folder_videos(folder_id):
     return render_template("index.html", videos=videos)
 
 
+@bp.route("/api/folders/<folder_id>")
+def folder_videos_api(folder_id):
+    check_folder_user(folder_id)
+    channels = ChannelDao.find_channels_from_folder(folder_id)
+    page = request.args.get('page', 1)
+    videos = asyncio.run(check_playlist_id_and_get_videos_from_channels(channels, page))
+    return jsonify({"videos": list(map(lambda video: {"video": video.to_dict()}, videos))})
+
+
 @bp.route("/folders")
 def folders():
     # channels = get_whole_channels()  # TODO: 이걸 매번 안 날리고도 속도 개선할 방법이 필요

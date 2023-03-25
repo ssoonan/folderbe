@@ -56,6 +56,11 @@ class Video:
     def get_video_url(self):
         return "https://www.youtube.com/embed/{}".format(self.video_id)
     
+    def to_dict(self):
+        result = self.__dict__
+        result['channel'] = self.channel.__dict__
+        return result
+
     def __repr__(self) -> str:
         return "video_{}".format(self.title)
 

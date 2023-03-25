@@ -6,10 +6,10 @@ from .db.dao import ChannelDao
 from .db.model import Channel, Video
 
 
-async def async_get_videos_from_channels(channels: List[Channel]):
+async def async_get_videos_from_channels(channels: List[Channel], page=1):
     responses = []
     for channel in channels:
-        response = async_get_videos_from_channel(channel, len(channels))
+        response = async_get_videos_from_channel(channel, len(channels), page)
         responses.append(response)
     results = await asyncio.gather(*responses)
     whole_videos = []
@@ -23,10 +23,9 @@ async def async_get_videos_from_channels(channels: List[Channel]):
     return whole_videos
 
 
-
-async def check_playlist_id_and_get_videos_from_channels(channels: List[Channel]):
+async def check_playlist_id_and_get_videos_from_channels(channels: List[Channel], page=1):
     for channel in channels:
         if not channel.playlist_id:
             get_playlist_from_channel(channel)
             ChannelDao.update_channel(channel)
-    return await async_get_videos_from_channels(channels)
+    return await async_get_videos_from_channels(channels, page)
