@@ -3,6 +3,7 @@
 {% block content %}
 <main class="content">
   {% if session.get('access_token') is not none %}
+  <div class="video-container">
     {% for video in videos %}
     <div class="thumbnail">
       <a href="#" class="thumbnail__link " data-bs-toggle="modal" data-bs-target="#videoModal" data-theVideo="https://www.youtube.com/embed/{{ video.video_id }}">
@@ -20,6 +21,7 @@
       </a>
     </div>
     {% endfor %}
+  </div>
   {% endif %}
 
   <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModal" aria-hidden="true" data-bs-keyboard="true">
@@ -52,35 +54,43 @@ function createThumbnailHtml(video) {
           <span class="thumbnail__date">${video.published_date}</span>
       </a>
     </div>`;
-    return html;
+    // const parser = new DOMParser()
+    // const node = parser.parseFromString(html, 'text/html').body.firstChild;
+    // return node
+    return html
 }
   let page = 1;
-  
-  function loadMoreContent() {
-    const folderId = window.location.pathname.split('/').at(-1)
-    page++;
-    fetch(`/api/folders/${folderId}?page=${page}`)
-      .then(res => res.json()
-      .then(res => {
-        console.log(res)
-        const videos = res.videos
-        const container = document.querySelector("main.content")
-        const videoHtml = videos.map(video => createThumbnailHtml(video))
-        container.insertAdjacentHTML('beforeend', videoHtml)
-      })
-    )
-  }
-  let currentScrollPosition = 0;
-  let isLoading = false;
-  window.addEventListener('scroll', () => {
+
+function loadMoreContent() {
+  const folderId = window.location.pathname.split('/').at(-1)
+  page++;
+  fetch(`/api/folders/${folderId}?page=${page}`)
+    .then(res => res.json()
+    .then(res => {
+      const videos = res.videos
+      const container = document.querySelector(".video-container")
+      const videosHtml = videos.map(video => createThumbnailHtml(video))
+      // videosHtml.map(videoHtml => container.appendChild(videoHtml)) 
+      videosHtml.forEach(videoHtml => container.insertAdjacentHTML('beforeend', videoHtml)); 
+    })
+  )
+}
+
+window.addEventListener('scroll', () => {
   const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-  // Check if the user has scrolled to the trigger point
+  // // Check if the user has scrolled to the trigger point
   if (scrollTop + clientHeight >= scrollHeight - 5) {
-    // Store the current scroll position before loading more content
-    currentScrollPosition = scrollTop;
-    isLoading = true;
-    loadMoreContent();
+    setTimeout(loadMoreContent, 1000);
   }
+
+  // const elements = document.querySelectorAll("div.thumbnail")
+  // const lastVideo = elements[elements.length-1]
+  // const { bottom } = lastVideo.getBoundingClientRect();
+  // const triggerPoint = bottom - window.innerHeight;
+
+  // if (window.pageYOffset >= triggerPoint) {
+  //   setTimeout(loadMoreContent, 1000);
+  // }
 });
 
   const thumbnails = document.querySelectorAll(".thumbnail__link");

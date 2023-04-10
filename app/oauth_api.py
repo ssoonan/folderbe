@@ -1,4 +1,4 @@
-from flask import jsonify, session, url_for, redirect, Response, abort
+from flask import jsonify, session, url_for, redirect, Response, abort, g
 from typing import List
 from datetime import datetime, timezone
 from dateutil.parser import parse
@@ -146,8 +146,12 @@ def get_videos_from_channel(channel: Channel, channel_counts, page=1): # 동기�
 async def async_get_videos_from_channel(channel: Channel, channel_counts, page=1):
     max_results = 18 // channel_counts + 1
     params = {"part": "snippet", "playlistId": channel.playlist_id, "maxResults": max_results, "pageToken": None}
+    if page == 1:
+        set_page_token_to_none(channel)
     if page != 1:
         params['pageToken'] = get_page_token(channel)
+        if is_end_page_token(channel):
+            return {"items": []}
     result = await async_http('get', PLAYLIST_API_URL, params)
     set_page_token(result, channel)
     return result
@@ -155,8 +159,20 @@ async def async_get_videos_from_channel(channel: Channel, channel_counts, page=1
 
 def set_page_token(result, channel: Channel):
     next_page_token = result.get('nextPageToken')
+    if next_page_token is None:
+        session[f"{channel.channel_id}_is_end"] = True
     session[f"{channel.channel_id}_next_page_token"] = next_page_token
-    
+
+
+def set_page_token_to_none(channel):
+    if f"{channel.channel_id}_next_page_token" in session:
+        del session[f"{channel.channel_id}_next_page_token"]
+    if f"{channel.channel_id}_is_end" in session:
+        del session[f"{channel.channel_id}_is_end"]
+
+
+def is_end_page_token(channel: Channel):
+    return session.get(f"{channel.channel_id}_is_end")
 
 def get_page_token(channel: Channel):
     return session.get(f"{channel.channel_id}_next_page_token")
