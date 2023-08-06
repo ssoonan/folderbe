@@ -69,11 +69,11 @@
             <svg class="modal__search--icon">
               <use href="/static/svg/sprite.svg#icon-magnifying-glass"></use>
             </svg>
-            <input type="text" class="modal__search--input" placeholder="검색">
+            <input id="filter" type="text" class="modal__search--input" placeholder="검색">
           </div>
           <form id="folderChannel--form">
             {% for channel in channels %}
-            <label class="modal__channel d-flex align-items-center pt-2 pb-2">
+            <label class="modal__channel d-flex align-items-center pt-2 pb-2 d-block">
               <input data-folder_ids="{{ channel.folder_ids }}" class="modal__channel--checkbox" type="checkbox"
                 name="{{ channel.channel_id }}" value="true">
               <div class=""><img class="modal__channel--avatar" src="{{ channel.icon_img }}" referrerpolicy="no-referrer" alt=""></div>
@@ -121,7 +121,25 @@
       );
   });
 
+  const searchInput = document.getElementById("filter")
+  document.getElementById("exampleModal").addEventListener("shown.bs.modal", () => searchInput.focus());
+  searchInput.addEventListener('change', (event) => {
+    const labels = document.querySelectorAll(".modal__channel")
+    labels.forEach((label, idx) => {
+      const channelNameElement = label.querySelector(".modal__channel--name");
+      if (!channelNameElement.textContent.trim().includes(event.target.value)) {
+        labels[idx].classList.remove("d-block")
+        labels[idx].classList.add("d-none")
+      }
+      else {
+        labels[idx].classList.remove("d-none")
+        labels[idx].classList.add("d-block")
+      } 
+    })
+  })
+
   const folderChannelForm2 = document.getElementById("folderChannel--form");
+  
   const channelCheckboxes = document.querySelectorAll(".modal__channel--checkbox")
   channelCheckboxes.forEach(function (channel, idx) {
     channel.addEventListener("click", function (event) {
