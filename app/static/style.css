@@ -1,23 +1,22 @@
 :root {
   --color-primary: #eb2f64;
-  --color-primary-light: #FF3366;
-  --color-primary-dark: #BA265D;
+  --color-primary-light: #ff3366;
+  --color-primary-dark: #ba265d;
 
   --color-grey-light-1: #faf9f9;
   --color-grey-light-2: #f4f2f2;
   --color-grey-light-3: #f0eeee;
   --color-grey-light-4: #ccc;
-  
+
   --color-grey-dark-1: #333;
   --color-grey-dark-2: #777;
   --color-grey-dark-3: #999;
 
-  --shadow-dark: 0 2rem 6rem rgba(0,0,0,.3);
-  --shadow-light: 0 2rem 5rem rgba(0,0,0,.06);
+  --shadow-dark: 0 2rem 6rem rgba(0, 0, 0, 0.3);
+  --shadow-light: 0 2rem 5rem rgba(0, 0, 0, 0.06);
 
   --line: 2px solid var(--color-grey-light-2);
 }
-
 
 * {
   margin: 0;
@@ -33,8 +32,49 @@ body {
   min-height: 100vh;
 }
 
+.landing {
+  margin: 0 10rem 0 10rem;
+}
+
+.landing--header {
+  padding: 5rem 3rem 3rem 3rem;
+  background-color: var(--color-grey-light-2);
+}
+
+.heading {
+  font-size: 5rem;
+  margin-bottom: 5rem;
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+}
+
+.subHeading {
+  font-size: 3rem;
+  display: block;
+  font-family: "Poppins", sans-serif;
+  font-weight: 300;
+}
+
+.divider {
+  margin-top: 7rem;
+}
+
+.feature {
+  margin: 4rem 5rem 8rem 5rem;
+  justify-content: space-between;
+  align-items: center;
+  white-space: pre-line;
+}
+
+.feature--text {
+  font-size: 3rem;
+  font-family: "Poppins", sans-serif;
+  font-weight: 200;
+}
+
 *,
-*::before, *::after {
+*::before,
+*::after {
   box-sizing: inherit;
 }
 
@@ -45,18 +85,18 @@ body {
 
 .fade {
   -webkit-transition: opacity 0.12s linear;
-     -moz-transition: opacity 0.12s linear;
-      -ms-transition: opacity 0.12s linear;
-       -o-transition: opacity 0.12s linear;
-          transition: opacity 0.12s linear;
+  -moz-transition: opacity 0.12s linear;
+  -ms-transition: opacity 0.12s linear;
+  -o-transition: opacity 0.12s linear;
+  transition: opacity 0.12s linear;
 }
 
 #videoModal {
   -webkit-transition: opacity 0.2s linear;
-     -moz-transition: opacity 0.2s linear;
-      -ms-transition: opacity 0.2s linear;
-       -o-transition: opacity 0.2s linear;
-          transition: opacity 0.2s linear;
+  -moz-transition: opacity 0.2s linear;
+  -ms-transition: opacity 0.2s linear;
+  -o-transition: opacity 0.2s linear;
+  transition: opacity 0.2s linear;
 }
 
 header {
@@ -118,7 +158,7 @@ main {
   align-content: flex-start;
 }
 
-.content {  
+.content {
   flex: 1;
   display: flex;
   flex-wrap: wrap;
@@ -132,21 +172,20 @@ main {
   font-size: 1.3rem;
   width: 24rem;
   height: 20rem;
-
 }
 
-.thumbnail__link, .thumbnail__link:hover{
+.thumbnail__link,
+.thumbnail__link:hover {
   display: flex;
   flex-direction: column;
   text-decoration: none;
   color: inherit;
-
 }
 
 .thumbnail__title {
-  margin-top: 1rem;  
-  margin-bottom: .8rem;
-  
+  margin-top: 1rem;
+  margin-bottom: 0.8rem;
+
   font-size: 1.3rem;
   font-weight: 550;
 }
@@ -160,24 +199,23 @@ main {
 }
 
 .thumbnail__channel--img {
-  margin-right: .8rem;
+  margin-right: 0.8rem;
   border-radius: 50%;
   width: 2rem;
-  height: 2rem; 
+  height: 2rem;
 }
 
-.thumbnail__channel--name, .thumbnail__channel--name:hover{
+.thumbnail__channel--name,
+.thumbnail__channel--name:hover {
   text-decoration: none;
   color: var(--color-grey-dark-2);
   display: block;
 }
 
-
 .thumbnail__detail {
   color: var(--color-grey-dark-2);
   display: block;
 }
-
 
 /* list */
 
@@ -195,7 +233,6 @@ main {
   margin-top: 1rem;
   margin-bottom: 1.5rem;
   background-color: var(--color-grey-light-4);
-  
 }
 
 .folders {
@@ -210,12 +247,11 @@ main {
   border-radius: 2%;
   padding-left: 3rem;
   border-top: var(--line);
-  
 }
 
 .folder:first-child {
   /* 첫번째에만 border 제외. 이미 적용 되니까 */
-  border-top: none; 
+  border-top: none;
 }
 
 .folder:hover {
@@ -226,7 +262,6 @@ main {
   display: block;
 }
 
-
 .folder__hover--icon {
   margin-left: auto;
   margin-right: 10rem;
@@ -235,7 +270,7 @@ main {
 
 .folder__plus-channel {
   font-size: 1.3rem;
-  padding: .6rem;
+  padding: 0.6rem;
   margin-right: 2rem;
   border-radius: 10%;
 }
@@ -244,16 +279,13 @@ main {
   background-color: var(--color-grey-light-4);
 }
 
-
 .folder__icon {
   cursor: pointer;
   width: 2rem;
   height: 2rem;
   fill: var(--color-grey-dark-3);
-  margin: 0 0.5rem
+  margin: 0 0.5rem;
 }
-
-
 
 /* modal */
 
@@ -279,9 +311,8 @@ main {
 
 .modal__content--addChannel {
   height: 70vh;
-  border-radius: .7%;
+  border-radius: 0.7%;
 }
-
 
 .modal__icon-folder-open {
   width: 2rem;
@@ -327,14 +358,12 @@ main {
 .modal__search--icon {
   width: 2rem;
   height: 2rem;
-  margin-right: .5rem;
+  margin-right: 0.5rem;
 }
-
 
 .modal__channel {
   border-bottom: var(--line);
 }
-
 
 .modal__channel:hover {
   background-color: var(--color-grey-light-2);

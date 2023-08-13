@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100&family=Poppins:wght@200;300;600&display=swap"
+      rel="stylesheet"
+    />
+
+    {% block styles %}
+    <!-- Bootstrap CSS -->
+    {{ bootstrap.load_css() }} <link rel="stylesheet" href={{ url_for('static',
+    filename='style.css' ) }}> {% endblock %}
+
+    <title>folderbe</title>
+    {% endblock %}
+  </head>
+  <body>
+    <div style="height: 200px"></div>
+    <div class="landing">
+      <div class="landing--header">
+        <h1 class="heading">Folderbe</h1>
+
+        <span class="subHeading">manage your</span>
+        <span class="subHeading pb-5">youtube channels by folder</span>
+        <div
+          id="g_id_onload"
+          data-client_id="244920735056-q17g2cqouhmf5maqe3g2ugkkp6qfr82n.apps.googleusercontent.com"
+          data-context="signin"
+          data-ux_mode="popup"
+          data-login_uri="https://folderbe.net/auth/authorize"
+          data-auto_prompt="false"
+        ></div>
+        <div
+          class="g_id_signin"
+          data-type="standard"
+          data-shape="rectangular"
+          data-theme="filled_black"
+          data-text="signin_with"
+          data-size="large"
+          data-logo_alignment="left"
+        ></div>
+      </div>
+      <hr class="divider" />
+      <div class="row feature">
+        <div class="col-md-5">
+          <img
+            src="{{ url_for('static',
+            filename='images/1.gif') }}"
+            alt=""
+            style="max-width: 500px; height: 300px"
+          />
+        </div>
+        <div class="col-md-5">
+          <h1 class="feature--text">
+            After login by Google,
+            Folderbe will Get your subscribed channels
+          </h1>
+        </div>
+      </div>
+      <div class="row feature">
+        <div class="col-md-5">
+          <h1 class="feature--text">
+            Curate Folders 
+            to Group Channels
+            by Interest
+          </h1>
+        </div>
+        <div class="col-md-5">
+          <img
+            src="{{ url_for('static',
+            filename='images/2.gif') }}"
+            alt=""
+            style="max-width: 500px; height: 300px"
+          />
+        </div>
+      </div>
+      <div class="row feature">
+        <div class="col-md-5">
+          <img
+            src="{{ url_for('static',
+            filename='images/3.gif') }}"
+            alt=""
+            style="max-width: 500px; height: 300px"
+          />
+        </div>
+        <div class="col-md-5">
+          <h1 class="feature--text">
+            Explore the Latest Videos
+            from Your Folder
+          </h1>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</html>
