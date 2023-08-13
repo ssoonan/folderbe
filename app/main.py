@@ -7,7 +7,7 @@ from flask import Blueprint, redirect, render_template, url_for, session, g, \
 
 
 from .db.model import Channel, Folder, LikeFolder, Video, make_example_videos
-from .oauth_api import  get_liked_videos, get_whole_channels
+from .oauth_api import get_liked_videos, get_whole_channels
 from .db.dao import ChannelDao, FolderDao, UserDao
 from .service import check_playlist_id_and_get_videos_from_channels
 
@@ -21,10 +21,11 @@ def check_access_token():
     if access_token is None:
         return
     if time.time() > session['expired_at']:  # 현재 시간이 더 크면 만료된 것
-        return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https'))  # session이 살아있으면 refresh_token
+        # session이 살아있으면 refresh_token
+        return redirect(url_for('auth.refresh_token',  _external=True, _scheme='https'))
     user_id = session['user_id']
-    user = UserDao.find_by(user_id) 
-    if user is None: # 이 경우는 인가가 안 된 것이 아닌 forbid
+    user = UserDao.find_by(user_id)
+    if user is None:  # 이 경우는 인가가 안 된 것이 아닌 forbid
         abort(403)
     folders = FolderDao.find_by_user(user_id)
     folders.insert(0, LikeFolder())
@@ -43,6 +44,11 @@ def check_folder_user(folder_id):  # TODO: 이걸 매번하는 방법이 없나?
     folder = FolderDao.find_by_id(folder_id)
     if folder.user_id != g.user_id:
         abort(403)
+
+
+@bp.route('/landing')
+def landing():
+    return render_template('landing.html')
 
 
 @bp.route("/index")
@@ -67,7 +73,8 @@ def folder_videos(folder_id):
         return render_template("index.html", videos=videos)
     check_folder_user(folder_id)
     channels = ChannelDao.find_channels_from_folder(folder_id)
-    videos = asyncio.run(check_playlist_id_and_get_videos_from_channels(channels))
+    videos = asyncio.run(
+        check_playlist_id_and_get_videos_from_channels(channels))
     return render_template("index.html", videos=videos)
 
 
@@ -76,15 +83,16 @@ def folder_videos_api(folder_id):
     check_folder_user(folder_id)
     channels = ChannelDao.find_channels_from_folder(folder_id)
     page = request.args.get('page', 1)
-    videos = asyncio.run(check_playlist_id_and_get_videos_from_channels(channels, page))
+    videos = asyncio.run(
+        check_playlist_id_and_get_videos_from_channels(channels, page))
     return jsonify({"videos": list(map(lambda video: video.to_dict(), videos))})
 
 
 @bp.route("/folders")
 def folders():
-    # channels = get_whole_channels()  # TODO: 이걸 매번 안 날리고도 속도 개선할 방법이 필요
-    # ChannelDao.insert_whole_channels(channels, g.user_id)
-    channels = ChannelDao.find_channels_from_user(g.user_id)
+    channels = get_whole_channels()  # TODO: 이걸 매번 안 날리고도 속도 개선할 방법이 필요
+    ChannelDao.insert_whole_channels(channels, g.user_id)
+    # channels = ChannelDao.find_channels_from_user(g.user_id)
     return render_template("list.html", channels=channels)
 
 
@@ -129,4 +137,3 @@ def delete_channel_from_folder(folder_id):
     channel_id = request.json.get('channel_id')
     ChannelDao.delete_channel_from_folder(channel_id, folder_id)
     return jsonify({"message": "success"})
-
