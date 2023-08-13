@@ -53,10 +53,28 @@ body {
   display: block;
   font-family: "Poppins", sans-serif;
   font-weight: 300;
+  white-space: pre-line;
 }
 
 .divider {
   margin-top: 7rem;
+  margin-bottom: 4rem;
+}
+
+.footer {
+  display: flex;
+  margin-bottom: 5rem;
+}
+
+.footer--else {
+  margin: 5rem 10rem 5rem 10rem;
+}
+
+div.footer > a {
+  margin-right: 5px;
+  text-decoration: none;
+  color: var(--color-grey-dark-2);
+  font-size: 1.5rem;
 }
 
 .feature {

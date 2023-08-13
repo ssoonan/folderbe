@@ -46,16 +46,11 @@ def check_folder_user(folder_id):  # TODO: 이걸 매번하는 방법이 없나?
         abort(403)
 
 
-@bp.route('/landing')
-def landing():
-    return render_template('landing.html')
-
-
 @bp.route("/index")
 @bp.route("/")
 def index():
     if session.get('user_id') is None:
-        return render_template("index.html")
+        return render_template('landing.html')
     videos = get_liked_videos()
     return render_template("index.html", videos=videos)
 
