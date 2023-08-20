@@ -54,9 +54,6 @@ function createThumbnailHtml(video) {
           <span class="thumbnail__date">${video.published_date}</span>
       </a>
     </div>`;
-    // const parser = new DOMParser()
-    // const node = parser.parseFromString(html, 'text/html').body.firstChild;
-    // return node
     return html
 }
   let page = 1;
@@ -69,30 +66,15 @@ function loadMoreContent() {
     .then(res => {
       const videos = res.videos
       const container = document.querySelector(".video-container")
-      const videosHtml = videos.map(video => createThumbnailHtml(video))
-      // videosHtml.map(videoHtml => container.appendChild(videoHtml)) 
+      const videosHtml = videos.map(video => createThumbnailHtml(video));
       videosHtml.forEach(videoHtml => container.insertAdjacentHTML('beforeend', videoHtml)); 
+
+      connectIframe();
     })
   )
 }
 
-window.addEventListener('scroll', () => {
-  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-  // // Check if the user has scrolled to the trigger point
-  if (scrollTop + clientHeight >= scrollHeight - 5) {
-    setTimeout(loadMoreContent, 1000);
-  }
-
-  // const elements = document.querySelectorAll("div.thumbnail")
-  // const lastVideo = elements[elements.length-1]
-  // const { bottom } = lastVideo.getBoundingClientRect();
-  // const triggerPoint = bottom - window.innerHeight;
-
-  // if (window.pageYOffset >= triggerPoint) {
-  //   setTimeout(loadMoreContent, 1000);
-  // }
-});
-
+function connectIframe () {
   const thumbnails = document.querySelectorAll(".thumbnail__link");
   thumbnails.forEach(function(thumbnail, idx) {
     thumbnail.addEventListener("click", event => {
@@ -101,10 +83,20 @@ window.addEventListener('scroll', () => {
       iframeNode.src = videoUrl;
     })
   })
+}
+window.addEventListener('scroll', () => {
+  const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+  // // Check if the user has scrolled to the trigger point
+  if (scrollTop + clientHeight >= scrollHeight - 5) {
+    setTimeout(loadMoreContent, 1000);
+  }
+});
 
-  const videoModal = document.querySelector("#videoModal");
-  videoModal.addEventListener("hide.bs.modal", () => document.querySelector("#videoModal iframe").src = "")
 
+
+const videoModal = document.querySelector("#videoModal");
+videoModal.addEventListener("hide.bs.modal", () => document.querySelector("#videoModal iframe").src = "")
+connectIframe()
     
 </script>
 
