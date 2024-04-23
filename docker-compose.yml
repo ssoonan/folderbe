@@ -1,18 +1,26 @@
 version: '3.1'
 
 services:
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
   nginx:
-      image: nginx:1
-      restart: always
-      volumes:
-        - ./nginx/:/etc/nginx/conf.d/
-        - /etc/letsencrypt/:/etc/letsencrypt/
-        - /var/www/certbot:/var/www/certbot
-      ports:
-        - "80:80"
-        - "443:443"
-      depends_on:
-        - "folderbe"
+    image: nginx:1.15-alpine
+    restart: unless-stopped
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+    ports:
+      - "80:80"
+      - "443:443"
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    depends_on:
+      - "folderbe"
   db:
     image: mysql
     # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
@@ -23,17 +31,14 @@ services:
       MYSQL_ROOT_PASSWORD: test
     
     volumes:
-      - ./data:/var/lib/mysql
+      - ./db/data:/var/lib/mysql
     
     ports:
       - 127.0.0.1:3306:3306
   
   folderbe:
-    build:
-      context: ./
+    image: ewr.vultrcr.com/folderbe/folderbe:latest
     restart: always
-    ports:
-      - 8000:8000
     depends_on:
       - db
     env_file:
