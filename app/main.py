@@ -1,6 +1,5 @@
 import time
 import asyncio
-import httpx
 
 from flask import Blueprint, redirect, render_template, url_for, session, g, \
     request, jsonify, Response, abort
@@ -15,9 +14,16 @@ from .service import check_playlist_id_and_get_videos_from_channels
 bp = Blueprint('main', __name__, )
 
 
+def get_endpoint_url(url):
+    return url.split('.')[-1]
+
+
 @bp.before_request
 def check_access_token():
     access_token = session.get('access_token')
+    print(request.endpoint)
+    if get_endpoint_url(request.endpoint) == 'privacy':
+        return
     if access_token is None:
         return
     if time.time() > session['expired_at']:  # 현재 시간이 더 크면 만료된 것
