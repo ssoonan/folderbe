@@ -16,15 +16,15 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="language" content="English" />
     <meta name="author" content="ssoonan" />
-
     {% block styles %}
     <!-- Bootstrap CSS -->
     {{ bootstrap.load_css() }}
     <link rel="stylesheet" href={{ url_for('static', filename='style.css' ) }}>
-
+    
     {% endblock %}
-
+    
     <title>folderbe</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
     {% endblock %}
 </head>
 
@@ -60,9 +60,9 @@
                     data-client_id="244920735056-q17g2cqouhmf5maqe3g2ugkkp6qfr82n.apps.googleusercontent.com"
                     data-context="signin"
                     data-ux_mode="redirect"
-                    data-login_uri="https://localhost:5050/auth/authorize"
+                    data-login_uri="https://folderbe.com/auth/authorize"
                     data-auto_prompt="false">
-                    <!-- data-login_uri="https://folderbe.net/auth/authorize" -->
+                    <!-- data-login_uri="https://localhost:5050/auth/authorize" -->
                 </div>
 
                 <div class="g_id_signin"
@@ -80,6 +80,19 @@
     </div>
 
     {{ bootstrap.load_js() }}
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script type="module">
+        import { createApp, ref } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.js'
+        createApp({
+          setup() {
+            const message = ref('Hello Vue!')
+            return {
+              message
+            }
+          },
+          delimiters: ['[[', ']]']
+        }).mount('#appp')
+      </script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     {% block scripts %}
     {% endblock %}
