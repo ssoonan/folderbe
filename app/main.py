@@ -21,7 +21,6 @@ def get_endpoint_url(url):
 @bp.before_request
 def check_access_token():
     access_token = session.get('access_token')
-    print(request.endpoint)
     if get_endpoint_url(request.endpoint) == 'privacy':
         return
     if access_token is None:
