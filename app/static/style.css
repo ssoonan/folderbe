@@ -41,6 +41,12 @@ body {
   background-color: var(--color-grey-light-2);
 }
 
+.custom-google-signin {
+  width: 204px; /* Adjust the width as needed */
+  margin: 0;
+  text-align: left;
+}
+
 .heading {
   font-size: 5rem;
   margin-bottom: 5rem;
