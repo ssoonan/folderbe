@@ -46,6 +46,11 @@ def check_folder_user(folder_id):  # TODO: 이걸 매번하는 방법이 없나?
         abort(403)
 
 
+@bp.route("/privacy")
+def privacy():
+    return render_template("privacy.html")
+
+
 @bp.route("/index")
 @bp.route("/")
 def index():
